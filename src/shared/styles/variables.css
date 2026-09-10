@@ -1,0 +1,40 @@
+:root {
+  /* Colors */
+
+  --color-background: #f4efe7;
+
+  --color-surface: #ffffff;
+
+  --color-coffee-900: #25150e;
+
+  --color-coffee-700: #4a2c20;
+
+  --color-coffee-500: #8a5a3b;
+
+  --color-milk: #f5e9d8;
+
+  --color-accent: #c77b3b;
+
+  /* Layout */
+
+  --container-max-width: 1440px;
+
+  --container-padding: 24px;
+
+  /* Radius */
+
+  --radius-sm: 12px;
+
+  --radius-md: 20px;
+
+  --radius-lg: 32px;
+
+  /* Animation */
+
+  --ease-out: cubic-bezier(
+    0.22,
+    1,
+    0.36,
+    1
+  );
+}
