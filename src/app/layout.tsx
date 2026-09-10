@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Coffee 3D Experience',
-  description: 'Interactive 3D geometry and animation landing page',
+  title: 'Coffee Story — Interactive Experience',
+  description: 'GSAP Scrollytelling Experience',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
