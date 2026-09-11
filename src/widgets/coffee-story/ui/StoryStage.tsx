@@ -1,5 +1,6 @@
 import { Container } from '@/shared/ui';
 import { STORY_STEPS } from '../model/storySteps';
+import type { StoryStep } from '../model/story.types';
 import styles from './CoffeeStory.module.css';
 import { CoffeeVisual } from './CoffeeVisual';
 import { StoryText } from './StoryText';
@@ -10,21 +11,45 @@ interface StoryStageProps {
 }
 
 export function StoryStage({ visualRef, registerTextRef }: StoryStageProps) {
+  const leftSteps = STORY_STEPS.filter((step) => step.side === 'left');
+  const rightSteps = STORY_STEPS.filter((step) => step.side === 'right');
+
+  const getOriginalIndex = (step: StoryStep) =>
+    STORY_STEPS.findIndex((storyStep) => storyStep.id === step.id);
+
   return (
     <Container className={styles.stageContainer}>
       <div className={styles.stageGrid}>
         <div className={styles.textZone}>
-          {STORY_STEPS.map((step, index) => (
-            <StoryText
-              key={step.id}
-              step={step}
-              refCb={(el) => registerTextRef(el, index)}
-            />
-          ))}
+          {leftSteps.map((step) => {
+            const index = getOriginalIndex(step);
+
+            return (
+              <StoryText
+                key={step.id}
+                step={step}
+                refCb={(el) => registerTextRef(el, index)}
+              />
+            );
+          })}
         </div>
 
         <div className={styles.visualZone}>
           <CoffeeVisual ref={visualRef} />
+        </div>
+
+        <div className={styles.textZone}>
+          {rightSteps.map((step) => {
+            const index = getOriginalIndex(step);
+
+            return (
+              <StoryText
+                key={step.id}
+                step={step}
+                refCb={(el) => registerTextRef(el, index)}
+              />
+            );
+          })}
         </div>
       </div>
     </Container>
