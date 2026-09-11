@@ -1,13 +1,13 @@
-type ContainerProps = {
-  children: React.ReactNode;
-};
+import { ReactNode } from 'react';
+import styles from './Container.module.css';
 
-export function Container({
-  children,
-}: ContainerProps) {
+interface ContainerProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export function Container({ children, className = '' }: ContainerProps) {
   return (
-    <div className="container">
-      {children}
-    </div>
+    <div className={`${styles.container} ${className}`.trim()}>{children}</div>
   );
 }
