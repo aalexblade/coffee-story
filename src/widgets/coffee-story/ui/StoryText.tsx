@@ -1,4 +1,4 @@
-import { StoryStep } from '../model/story.types';
+import type { StoryStep } from '../model/story.types';
 import styles from './CoffeeStory.module.css';
 
 interface StoryTextProps {
@@ -8,10 +8,15 @@ interface StoryTextProps {
 
 export function StoryText({ step, refCb }: StoryTextProps) {
   return (
-    <div ref={refCb} className={styles.textCard}>
+    <article
+      ref={refCb}
+      className={styles.textCard}
+      data-side={step.side}
+      data-step={step.id}
+    >
       <span className={styles.tag}>{step.tag}</span>
-      <h3 className={styles.title}>{step.title}</h3>
+      <h2 className={styles.title}>{step.title}</h2>
       <p className={styles.description}>{step.description}</p>
-    </div>
+    </article>
   );
 }
