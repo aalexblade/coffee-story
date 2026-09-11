@@ -3,27 +3,35 @@ import { useRef } from 'react';
 import { createStoryTimeline } from '../lib/createStoryTimeline';
 
 export function useCoffeeStory() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLElement>(null);
   const visualRef = useRef<HTMLDivElement>(null);
   const textRefs = useRef<HTMLDivElement[]>([]);
 
-  const registerTextRef = (el: HTMLDivElement | null, index: number) => {
-    if (el) textRefs.current[index] = el;
+  const registerTextRef = (element: HTMLDivElement | null, index: number) => {
+    if (element) {
+      textRefs.current[index] = element;
+    }
   };
 
   useGSAP(
     () => {
-      if (!containerRef.current || !visualRef.current || textRefs.current.length === 0) {
+      const container = containerRef.current;
+      const visual = visualRef.current;
+      const textCards = textRefs.current.filter(Boolean);
+
+      if (!container || !visual || textCards.length === 0) {
         return;
       }
 
       createStoryTimeline({
-        container: containerRef.current,
-        visual: visualRef.current,
-        textCards: textRefs.current,
+        container,
+        visual,
+        textCards,
       });
     },
-    { scope: containerRef }
+    {
+      scope: containerRef,
+    },
   );
 
   return {
