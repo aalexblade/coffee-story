@@ -25,7 +25,7 @@ export function Hero() {
     <section ref={containerRef} className={styles.hero}>
       <Container>
         <div className={styles.content}>
-          <h1 className={styles.title}>Coffee 3D Experience</h1>
+          <h1 className={styles.title}>Coffee Story Experience</h1>
           <p className={styles.subtitle}>
             Інтерактивна геометрія та складна анімація кави
           </p>
