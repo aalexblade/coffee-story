@@ -2,4 +2,116 @@
   min-height: 100vh;
   padding: 80px 20px;
   background-color: var(--color-surface);
+}.section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--color-surface, #fbf9f5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.stageContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.stageGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  width: 100%;
+}
+
+.textZone {
+  position: relative;
+  height: 220px;
+}
+
+.textCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.textCard:first-child {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent, #c87d55);
+  margin-bottom: 8px;
+}
+
+.title {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  color: var(--color-coffee-900, #2c1a14);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.description {
+  font-size: 1.125rem;
+  color: var(--color-coffee-700, #5c4033);
+  line-height: 1.6;
+}
+
+.visualZone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.visualContainer {
+  width: 320px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visualPlaceholder {
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, #c87d55 0%, #2c1a14 100%);
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 25px 50px -12px rgba(44, 26, 20, 0.25);
+  will-change: transform;
+}
+
+.visualLabel {
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 0 16px;
+}
+
+@media (max-width: 768px) {
+  .stageGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .textZone {
+    height: 180px;
+  }
 }

@@ -1,9 +1,15 @@
+'use client';
+
+import { useCoffeeStory } from '../model/useCoffeeStory';
 import styles from './CoffeeStory.module.css';
+import { StoryStage } from './StoryStage';
 
 export function CoffeeStory() {
+  const { containerRef, visualRef, registerTextRef } = useCoffeeStory();
+
   return (
-    <section className={styles.section}>
-      <h2>Coffee Story Section</h2>
+    <section ref={containerRef} className={styles.section}>
+      <StoryStage visualRef={visualRef} registerTextRef={registerTextRef} />
     </section>
   );
 }
