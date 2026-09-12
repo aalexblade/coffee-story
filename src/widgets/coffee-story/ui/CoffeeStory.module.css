@@ -74,27 +74,10 @@
 
 .visualContainer {
   width: min(100%, 420px);
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 5;
   display: grid;
   place-items: center;
-}
-
-.visualPlaceholder {
-  width: 260px;
-  height: 260px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: radial-gradient(circle, #c87d55 0%, #2c1a14 100%);
-  box-shadow: 0 25px 50px rgba(44, 26, 20, 0.25);
   will-change: transform;
-}
-
-.visualLabel {
-  padding-inline: 24px;
-  color: #ffffff;
-  font-size: 0.875rem;
-  text-align: center;
 }
 
 @media (max-width: 900px) {
