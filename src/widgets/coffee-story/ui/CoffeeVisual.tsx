@@ -1,4 +1,8 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import {
+  forwardRef,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import styles from './CoffeeStory.module.css';
 import { CoffeeScene } from './coffee-visual/CoffeeScene';
 import type {
@@ -6,41 +10,63 @@ import type {
   CoffeeVisualHandle,
 } from './coffee-visual/coffeeScene.types';
 
-export const CoffeeVisual = forwardRef<CoffeeVisualHandle>((_, ref) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const sceneRef = useRef<CoffeeSceneRefs>(null);
+export const CoffeeVisual = forwardRef<CoffeeVisualHandle>(
+  (_, ref) => {
+    const containerRef = useRef<HTMLDivElement>(null);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      get root() {
-        return containerRef.current;
-      },
+    const sceneRef = useRef<CoffeeSceneRefs>(null);
 
-      get hero() {
-        return sceneRef.current?.hero ?? null;
-      },
+    useImperativeHandle(
+      ref,
+      () => ({
+        get root() {
+          return containerRef.current;
+        },
 
-      get package() {
-        return sceneRef.current?.package ?? null;
-      },
+        get hero() {
+          return sceneRef.current?.hero ?? null;
+        },
 
-      get beans() {
-        return sceneRef.current?.beans ?? null;
-      },
+        get package() {
+          return sceneRef.current?.package ?? null;
+        },
 
-      get espresso() {
-        return sceneRef.current?.espresso ?? null;
-      },
-    }),
-    [],
-  );
+        get beans() {
+          return sceneRef.current?.beans ?? null;
+        },
 
-  return (
-    <div ref={containerRef} className={styles.visualContainer}>
-      <CoffeeScene ref={sceneRef} />
-    </div>
-  );
-});
+        get espresso() {
+          return sceneRef.current?.espresso ?? null;
+        },
+
+        get espressoCup() {
+          return sceneRef.current?.espressoCup ?? null;
+        },
+
+        get espressoLiquid() {
+          return sceneRef.current?.espressoLiquid ?? null;
+        },
+
+        get espressoCrema() {
+          return sceneRef.current?.espressoCrema ?? null;
+        },
+
+        get espressoStream() {
+          return sceneRef.current?.espressoStream ?? null;
+        },
+      }),
+      [],
+    );
+
+    return (
+      <div
+        ref={containerRef}
+        className={styles.visualContainer}
+      >
+        <CoffeeScene ref={sceneRef} />
+      </div>
+    );
+  },
+);
 
 CoffeeVisual.displayName = 'CoffeeVisual';

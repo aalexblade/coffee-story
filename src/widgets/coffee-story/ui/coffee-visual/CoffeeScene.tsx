@@ -11,7 +11,12 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>(
     const heroRef = useRef<SVGGElement>(null);
     const packageRef = useRef<SVGGElement>(null);
     const beansRef = useRef<SVGGElement>(null);
+
     const espressoRef = useRef<SVGGElement>(null);
+    const espressoCupRef = useRef<SVGGElement>(null);
+    const espressoLiquidRef = useRef<SVGGElement>(null);
+    const espressoCremaRef = useRef<SVGGElement>(null);
+    const espressoStreamRef = useRef<SVGPathElement>(null);
 
     useImperativeHandle(
       ref,
@@ -19,7 +24,12 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>(
         hero: heroRef.current,
         package: packageRef.current,
         beans: beansRef.current,
+
         espresso: espressoRef.current,
+        espressoCup: espressoCupRef.current,
+        espressoLiquid: espressoLiquidRef.current,
+        espressoCrema: espressoCremaRef.current,
+        espressoStream: espressoStreamRef.current,
       }),
       [],
     );
@@ -81,11 +91,22 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>(
               floodOpacity="0.18"
             />
           </filter>
+
+          <clipPath id="espressoCupClip">
+            <path
+              d="
+                M125 220
+                H275
+                L258 342
+                Q200 370 142 342
+                Z
+              "
+            />
+          </clipPath>
         </defs>
 
         {/* HERO */}
         <g ref={heroRef}>
-          {/* Coffee package */}
           <g
             ref={packageRef}
             className={styles.packageGroup}
@@ -136,7 +157,6 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>(
             />
           </g>
 
-          {/* Coffee beans */}
           <g ref={beansRef} className={styles.beansGroup}>
             <ellipse
               cx="95"
@@ -195,77 +215,100 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>(
         </g>
 
         {/* ESPRESSO */}
-        <g
-          ref={espressoRef}
-          className={styles.espressoGroup}
-          filter="url(#sceneShadow)"
-        >
-          <ellipse
-            cx="200"
-            cy="390"
-            rx="125"
-            ry="26"
-            fill="#DED4C8"
-          />
-
-          <ellipse
-            cx="200"
-            cy="382"
-            rx="110"
-            ry="20"
-            fill="#F7F1E9"
-          />
-
+        <g ref={espressoRef} className={styles.espressoGroup}>
+          {/* Coffee stream */}
           <path
-            d="
-              M115 220
-              H285
-              L265 355
-              Q200 390 135 355
-              Z
-            "
-            fill="url(#cupGradient)"
-          />
-
-          <path
-            d="
-              M285 250
-              H320
-              Q350 250 350 290
-              Q350 330 315 330
-              H275
-            "
-            stroke="#E8DED2"
-            strokeWidth="20"
+            ref={espressoStreamRef}
+            className={styles.espressoStream}
+            d="M200 70 L200 220"
+            stroke="url(#espressoGradient)"
+            strokeWidth="10"
             strokeLinecap="round"
-            strokeLinejoin="round"
           />
 
-          <ellipse
-            cx="200"
-            cy="220"
-            rx="85"
-            ry="24"
-            fill="url(#espressoGradient)"
-          />
+          {/* Cup */}
+          <g
+            ref={espressoCupRef}
+            filter="url(#sceneShadow)"
+          >
+            {/* Saucer */}
+            <ellipse
+              cx="200"
+              cy="390"
+              rx="125"
+              ry="26"
+              fill="#DED4C8"
+            />
 
-          <ellipse
-            cx="200"
-            cy="218"
-            rx="76"
-            ry="17"
-            fill="#C9824B"
-            opacity="0.85"
-          />
+            <ellipse
+              cx="200"
+              cy="382"
+              rx="110"
+              ry="20"
+              fill="#F7F1E9"
+            />
 
-          <ellipse
-            cx="175"
-            cy="213"
-            rx="25"
-            ry="6"
-            fill="#F6C28B"
-            opacity="0.35"
-          />
+            {/* Cup body */}
+            <path
+              d="
+                M115 220
+                H285
+                L265 355
+                Q200 390 135 355
+                Z
+              "
+              fill="url(#cupGradient)"
+            />
+
+            {/* Handle */}
+            <path
+              d="
+                M285 250
+                H320
+                Q350 250 350 290
+                Q350 330 315 330
+                H275
+              "
+              stroke="#E8DED2"
+              strokeWidth="20"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </g>
+
+          {/* Liquid */}
+          <g
+            ref={espressoLiquidRef}
+            clipPath="url(#espressoCupClip)"
+          >
+            <rect
+              x="115"
+              y="220"
+              width="170"
+              height="140"
+              fill="url(#espressoGradient)"
+            />
+          </g>
+
+          {/* Crema */}
+          <g ref={espressoCremaRef}>
+            <ellipse
+              cx="200"
+              cy="220"
+              rx="76"
+              ry="17"
+              fill="#C9824B"
+            />
+
+            <ellipse
+              cx="175"
+              cy="213"
+              rx="25"
+              ry="6"
+              fill="#F6C28B"
+              opacity="0.35"
+            />
+          </g>
         </g>
       </svg>
     );

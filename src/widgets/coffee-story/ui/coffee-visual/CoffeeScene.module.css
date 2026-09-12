@@ -7,10 +7,15 @@
 
 .packageGroup,
 .beansGroup,
-.espressoGroup {
+.espressoGroup,
+.espressoStream {
   transform-box: fill-box;
   transform-origin: center;
   will-change: transform, opacity;
+}
+
+.espressoStream {
+  transform-origin: top center;
 }
 
 .packageBrand {

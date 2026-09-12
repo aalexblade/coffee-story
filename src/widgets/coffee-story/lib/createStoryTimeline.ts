@@ -16,9 +16,30 @@ export function createStoryTimeline({
   visual,
   textCards,
 }: TimelineParams): gsap.core.Timeline {
-  const { root, hero, package: coffeePackage, beans, espresso } = visual;
+  const {
+    root,
+    hero,
+    package: coffeePackage,
+    beans,
 
-  if (!root || !hero || !coffeePackage || !beans || !espresso) {
+    espresso,
+    espressoCup,
+    espressoLiquid,
+    espressoCrema,
+    espressoStream,
+  } = visual;
+
+  if (
+    !root ||
+    !hero ||
+    !coffeePackage ||
+    !beans ||
+    !espresso ||
+    !espressoCup ||
+    !espressoLiquid ||
+    !espressoCrema ||
+    !espressoStream
+  ) {
     return gsap.timeline();
   }
 
@@ -59,10 +80,31 @@ export function createStoryTimeline({
   });
 
   gsap.set(espresso, {
+    autoAlpha: 1,
+  });
+
+  gsap.set(espressoCup, {
     autoAlpha: 0,
-    y: 40,
+    y: 50,
     scale: 0.88,
     transformOrigin: 'center center',
+  });
+
+  gsap.set(espressoLiquid, {
+    scaleY: 0,
+    transformOrigin: 'bottom center',
+  });
+
+  gsap.set(espressoCrema, {
+    autoAlpha: 0,
+    scaleX: 0.8,
+    transformOrigin: 'center center',
+  });
+
+  gsap.set(espressoStream, {
+    autoAlpha: 0,
+    scaleY: 0,
+    transformOrigin: 'top center',
   });
 
   const tl = gsap.timeline({
@@ -80,7 +122,7 @@ export function createStoryTimeline({
   /*
    * STEP 0 → STEP 1
    *
-   * HERO → ESPRESSO
+   * HERO → ANIMATED ESPRESSO
    */
 
   tl.to(
@@ -110,7 +152,7 @@ export function createStoryTimeline({
   );
 
   tl.to(
-    espresso,
+    espressoCup,
     {
       autoAlpha: 1,
       y: 0,
@@ -120,6 +162,37 @@ export function createStoryTimeline({
     },
     '<0.2',
   );
+
+  tl.to(espressoStream, {
+    autoAlpha: 1,
+    scaleY: 1,
+    duration: 0.35,
+    ease: 'power2.out',
+  });
+
+  tl.to(
+    espressoLiquid,
+    {
+      scaleY: 1,
+      duration: 0.8,
+      ease: 'power2.out',
+    },
+    '<',
+  );
+
+  tl.to(espressoStream, {
+    autoAlpha: 0,
+    scaleY: 0,
+    duration: 0.3,
+    ease: 'power2.in',
+  });
+
+  tl.to(espressoCrema, {
+    autoAlpha: 1,
+    scaleX: 1,
+    duration: 0.45,
+    ease: 'power2.out',
+  });
 
   /*
    * Hero → Espresso text
@@ -153,9 +226,6 @@ export function createStoryTimeline({
 
   /*
    * Remaining text transitions
-   *
-   * Visual animation will be added
-   * step by step with new drinks.
    */
 
   textCards.slice(1).forEach((card, index) => {
