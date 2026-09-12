@@ -5,7 +5,7 @@ export interface CoffeeSceneRefs {
 
   espresso: SVGGElement | null;
   espressoCup: SVGGElement | null;
-  espressoLiquid: SVGGElement | null;
+  espressoLiquid: SVGRectElement | null;
   espressoCrema: SVGGElement | null;
   espressoStream: SVGPathElement | null;
 }
@@ -19,7 +19,7 @@ export interface CoffeeVisualHandle {
 
   readonly espresso: SVGGElement | null;
   readonly espressoCup: SVGGElement | null;
-  readonly espressoLiquid: SVGGElement | null;
+  readonly espressoLiquid: SVGRectElement | null;
   readonly espressoCrema: SVGGElement | null;
   readonly espressoStream: SVGPathElement | null;
 }
