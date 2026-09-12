@@ -1,11 +1,10 @@
-import {
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-} from 'react';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import styles from './CoffeeStory.module.css';
 import { CoffeeScene } from './coffee-visual/CoffeeScene';
-import type { CoffeeSceneRefs, CoffeeVisualHandle } from './coffee-visual/coffeeScene.types';
+import type {
+  CoffeeSceneRefs,
+  CoffeeVisualHandle,
+} from './coffee-visual/coffeeScene.types';
 
 export const CoffeeVisual = forwardRef<CoffeeVisualHandle>((_, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,11 +13,25 @@ export const CoffeeVisual = forwardRef<CoffeeVisualHandle>((_, ref) => {
   useImperativeHandle(
     ref,
     () => ({
-      root: containerRef.current,
-      hero: sceneRef.current?.hero ?? null,
-      package: sceneRef.current?.package ?? null,
-      beans: sceneRef.current?.beans ?? null,
-      espresso: sceneRef.current?.espresso ?? null,
+      get root() {
+        return containerRef.current;
+      },
+
+      get hero() {
+        return sceneRef.current?.hero ?? null;
+      },
+
+      get package() {
+        return sceneRef.current?.package ?? null;
+      },
+
+      get beans() {
+        return sceneRef.current?.beans ?? null;
+      },
+
+      get espresso() {
+        return sceneRef.current?.espresso ?? null;
+      },
     }),
     [],
   );
