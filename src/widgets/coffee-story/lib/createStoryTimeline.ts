@@ -90,9 +90,13 @@ export function createStoryTimeline({
     transformOrigin: 'center center',
   });
 
+  /*
+   * ЗМІНЕНО: Замість scaleY використовуємо атрибут y (старт із 360)
+   */
   gsap.set(espressoLiquid, {
-    scaleY: 0,
-    transformOrigin: 'bottom center',
+    attr: {
+      y: 360,
+    },
   });
 
   gsap.set(espressoCrema, {
@@ -170,10 +174,15 @@ export function createStoryTimeline({
     ease: 'power2.out',
   });
 
+  /*
+   * ЗМІНЕНО: Замість scaleY: 1 анімуємо y до 220 для реального підйому рідини
+   */
   tl.to(
     espressoLiquid,
     {
-      scaleY: 1,
+      attr: {
+        y: 220,
+      },
       duration: 0.8,
       ease: 'power2.out',
     },
