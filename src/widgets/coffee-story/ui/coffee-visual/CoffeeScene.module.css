@@ -5,6 +5,24 @@
   overflow: visible;
 }
 
+.packageGroup,
+.beansGroup,
 .espressoGroup {
+  transform-box: fill-box;
   transform-origin: center;
+  will-change: transform, opacity;
+}
+
+.packageBrand {
+  fill: #2c1a14;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.packageName {
+  fill: #6f3e2a;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }

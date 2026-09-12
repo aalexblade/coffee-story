@@ -103,7 +103,6 @@
   .stageGrid > :last-child {
     display: none;
   }
-
   .textCard {
     position: absolute;
     width: min(100%, 420px);
