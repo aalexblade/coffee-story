@@ -122,6 +122,9 @@
   }
 
   .textCard {
-    left: 0;
+    position: absolute;
+    width: min(100%, 420px);
+    pointer-events: none;
+    will-change: transform, opacity;
   }
 }
