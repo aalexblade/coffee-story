@@ -1,12 +1,11 @@
 import { forwardRef } from 'react';
 import styles from './CoffeeStory.module.css';
+import { CoffeeScene } from './coffee-visual/CoffeeScene';
 
 export const CoffeeVisual = forwardRef<HTMLDivElement>((_, ref) => {
   return (
-    <div className={styles.visualContainer}>
-      <div ref={ref} className={styles.visualPlaceholder}>
-        <span className={styles.visualLabel}>Espresso Cup Placeholder</span>
-      </div>
+    <div ref={ref} className={styles.visualContainer}>
+      <CoffeeScene />
     </div>
   );
 });
