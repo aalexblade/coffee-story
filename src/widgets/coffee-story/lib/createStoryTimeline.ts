@@ -6,42 +6,81 @@ interface TimelineParams {
   textCards: HTMLElement[];
 }
 
+const STEP_DURATION = 1;
+const HOLD_DURATION = 1;
+const TEXT_OFFSET = 40;
+
 export function createStoryTimeline({
   container,
   visual,
   textCards,
 }: TimelineParams): gsap.core.Timeline {
+  gsap.set(textCards, {
+    autoAlpha: 0,
+    y: TEXT_OFFSET,
+  });
+
+  gsap.set(textCards[0], {
+    autoAlpha: 1,
+    y: 0,
+  });
+
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: container,
       start: 'top top',
-      end: '+=300%',
+      end: `+=${textCards.length * 100}%`,
       pin: true,
       scrub: 1,
       anticipatePin: 1,
+      invalidateOnRefresh: true,
     },
   });
 
-  // Початкові стани для карток (крім першої)
   textCards.forEach((card, index) => {
-    if (index !== 0) {
-      gsap.set(card, { opacity: 0, y: 30 });
+    if (index === textCards.length - 1) {
+      return;
     }
-  });
 
-  // Крок 1 -> Крок 2
-  tl.to(textCards[0], { opacity: 0, y: -30, duration: 1 })
-    .to(visual, { scale: 1.15, rotation: 10, duration: 1 }, '<')
-    .to(textCards[1], { opacity: 1, y: 0, duration: 1 }, '-=0.5')
+    const nextCard = textCards[index + 1];
 
-    // Крок 2 -> Крок 3
-    .to(textCards[1], { opacity: 0, y: -30, duration: 1 }, '+=1')
-    .to(
+    tl.to(
+      card,
+      {
+        autoAlpha: 0,
+        y: -TEXT_OFFSET,
+        duration: STEP_DURATION,
+        ease: 'power2.inOut',
+      },
+      `+=${HOLD_DURATION}`
+    );
+
+    tl.to(
       visual,
-      { scale: 1, rotation: 0, borderRadius: '50%', duration: 1 },
+      {
+        scale: index % 2 === 0 ? 1.06 : 1,
+        rotation: index % 2 === 0 ? 3 : -3,
+        duration: STEP_DURATION,
+        ease: 'power2.inOut',
+      },
       '<'
-    )
-    .to(textCards[2], { opacity: 1, y: 0, duration: 1 }, '-=0.5');
+    );
+
+    tl.fromTo(
+      nextCard,
+      {
+        autoAlpha: 0,
+        y: TEXT_OFFSET,
+      },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: STEP_DURATION,
+        ease: 'power2.out',
+      },
+      '<'
+    );
+  });
 
   return tl;
 }
