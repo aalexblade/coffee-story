@@ -128,10 +128,18 @@ export function initTimelineState(
     });
   }
 
-  if (cortadoLiquid && cortadoMilk) {
-    gsap.set([cortadoLiquid, cortadoMilk], {
+  if (cortadoLiquid) {
+    gsap.set(cortadoLiquid, {
       attr: {
-        y: 350,
+        y: 370,
+      },
+    });
+  }
+
+  if (cortadoMilk) {
+    gsap.set(cortadoMilk, {
+      attr: {
+        y: 285,
       },
     });
   }
