@@ -1,8 +1,10 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import styles from './CoffeeScene.module.css';
-import type { CoffeeSceneRefs } from './coffeeScene.types';
+import type { CoffeeVisualHandle } from './coffeeScene.types';
 
-export const CoffeeScene = forwardRef<CoffeeSceneRefs>((_, ref) => {
+export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
+  const rootRef = useRef<SVGSVGElement>(null);
+
   const heroRef = useRef<SVGGElement>(null);
   const packageRef = useRef<SVGGElement>(null);
   const beansRef = useRef<SVGGElement>(null);
@@ -13,9 +15,17 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>((_, ref) => {
   const espressoCremaRef = useRef<SVGGElement>(null);
   const espressoStreamRef = useRef<SVGPathElement>(null);
 
+  const cortadoRef = useRef<SVGGElement>(null);
+  const cortadoGlassRef = useRef<SVGGElement>(null);
+  const cortadoLiquidRef = useRef<SVGRectElement>(null);
+  const cortadoMilkRef = useRef<SVGRectElement>(null);
+  const cortadoStreamRef = useRef<SVGPathElement>(null);
+
   useImperativeHandle(
     ref,
     () => ({
+      root: rootRef.current,
+
       hero: heroRef.current,
       package: packageRef.current,
       beans: beansRef.current,
@@ -25,12 +35,19 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>((_, ref) => {
       espressoLiquid: espressoLiquidRef.current,
       espressoCrema: espressoCremaRef.current,
       espressoStream: espressoStreamRef.current,
+
+      cortado: cortadoRef.current,
+      cortadoGlass: cortadoGlassRef.current,
+      cortadoLiquid: cortadoLiquidRef.current,
+      cortadoMilk: cortadoMilkRef.current,
+      cortadoStream: cortadoStreamRef.current,
     }),
     [],
   );
 
   return (
     <svg
+      ref={rootRef}
       className={styles.scene}
       viewBox="0 0 400 500"
       fill="none"
@@ -70,6 +87,18 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>((_, ref) => {
                 H275
                 L258 342
                 Q200 370 142 342
+                Z
+              "
+          />
+        </clipPath>
+
+        <clipPath id="cortadoClip">
+          <path
+            d="
+                M127 222
+                H273
+                L260 348
+                Q200 365 140 348
                 Z
               "
           />
@@ -249,6 +278,67 @@ export const CoffeeScene = forwardRef<CoffeeSceneRefs>((_, ref) => {
             ry="6"
             fill="#F6C28B"
             opacity="0.35"
+          />
+        </g>
+      </g>
+
+      {/* CORTADO */}
+      <g ref={cortadoRef} className={styles.cortadoGroup}>
+        {/* Milk stream */}
+        <path
+          ref={cortadoStreamRef}
+          className={styles.cortadoStream}
+          d="M200 70 L200 225"
+          stroke="#F4E8D8"
+          strokeWidth="9"
+          strokeLinecap="round"
+        />
+
+        {/* Glass vessel */}
+        <g ref={cortadoGlassRef} filter="url(#sceneShadow)">
+          <path
+            d="
+                M125 220
+                H275
+                L262 350
+                Q200 365 138 350
+                Z
+              "
+            fill="rgba(232, 224, 215, 0.28)"
+            stroke="#CFC4B8"
+            strokeWidth="3"
+          />
+
+          <path
+            d="
+                M125 220
+                H275
+              "
+            stroke="#BFB2A4"
+            strokeWidth="4"
+            strokeLinecap="round"
+          />
+        </g>
+
+        {/* Coffee Base Layer */}
+        <g clipPath="url(#cortadoClip)">
+          <rect
+            ref={cortadoLiquidRef}
+            x="127"
+            y="350"
+            width="146"
+            height="120"
+            fill="#75442F"
+          />
+
+          {/* Milk Layer */}
+          <rect
+            ref={cortadoMilkRef}
+            x="127"
+            y="350"
+            width="146"
+            height="120"
+            fill="#DCC7AD"
           />
         </g>
       </g>
