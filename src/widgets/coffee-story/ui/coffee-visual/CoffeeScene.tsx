@@ -1,5 +1,6 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import type { CoffeeVisualHandle } from './coffeeScene.types';
+import styles from './CoffeeScene.module.css';
 
 export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
   const rootRef = useRef<SVGSVGElement>(null);
@@ -88,7 +89,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
   return (
     <svg
       ref={rootRef}
-      className="h-full w-full overflow-visible"
+      className={styles.scene}
       viewBox="0 0 400 400"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +117,14 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
       {/* HERO SCENE */}
       <g ref={heroRef}>
         <g ref={packageRef} filter="url(#sceneShadow)">
-          <rect x="140" y="110" width="120" height="170" rx="16" fill="#2C1810" />
+          <rect
+            x="140"
+            y="110"
+            width="120"
+            height="170"
+            rx="16"
+            fill="#2C1810"
+          />
           <rect x="155" y="130" width="90" height="130" rx="8" fill="#3D2317" />
           <path
             d="M170 170 C170 155 230 155 230 170 C230 200 170 190 170 215 C170 230 230 230 230 215"
@@ -128,9 +136,30 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
         </g>
 
         <g ref={beansRef} filter="url(#sceneShadow)">
-          <ellipse cx="110" cy="270" rx="16" ry="11" fill="#4A2810" transform="rotate(-25 110 270)" />
-          <ellipse cx="285" cy="280" rx="14" ry="10" fill="#3D2317" transform="rotate(35 285 280)" />
-          <ellipse cx="135" cy="305" rx="12" ry="8" fill="#5C3317" transform="rotate(15 135 305)" />
+          <ellipse
+            cx="110"
+            cy="270"
+            rx="16"
+            ry="11"
+            fill="#4A2810"
+            transform="rotate(-25 110 270)"
+          />
+          <ellipse
+            cx="285"
+            cy="280"
+            rx="14"
+            ry="10"
+            fill="#3D2317"
+            transform="rotate(35 285 280)"
+          />
+          <ellipse
+            cx="135"
+            cy="305"
+            rx="12"
+            ry="8"
+            fill="#5C3317"
+            transform="rotate(15 135 305)"
+          />
         </g>
       </g>
 
