@@ -10,38 +10,26 @@
   height: 100%;
 }
 
-/* 3-column desktop layout: Left Text | Center Visual | Right Text */
 .stageGrid {
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(320px, 420px) minmax(
-      280px,
-      1fr
-    );
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
   align-items: center;
-  gap: clamp(24px, 4vw, 64px);
+  gap: clamp(32px, 6vw, 96px);
   width: 100%;
   height: 100%;
 }
 
-.leftTextZone,
-.rightTextZone {
+.textZone {
   position: relative;
   min-height: 260px;
   display: flex;
   align-items: center;
 }
 
-.leftTextZone {
-  justify-content: flex-end;
-}
-
-.rightTextZone {
-  justify-content: flex-start;
-}
-
 .textCard {
   position: absolute;
-  width: min(100%, 380px);
+  left: 0;
+  width: min(100%, 420px);
   pointer-events: none;
   will-change: transform, opacity;
 }
@@ -77,50 +65,31 @@
   min-width: 0;
 }
 
-/* Tablet Layout: 2 columns (Text Left | Visual Right) */
 @media (max-width: 900px) {
   .stageGrid {
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
     gap: 32px;
   }
 
-  /* Combine both text zones into left column on tablet */
-  .rightTextZone {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .leftTextZone {
-    grid-column: 1;
-    grid-row: 1;
-    justify-content: flex-start;
-  }
-
-  .visualZone {
-    grid-column: 2;
-    grid-row: 1;
+  .textCard {
+    width: min(100%, 360px);
   }
 }
 
-/* Mobile Layout: Stacked (Text Top | Visual Bottom) */
 @media (max-width: 640px) {
   .stageGrid {
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(180px, auto) minmax(260px, 1fr);
+    grid-template-rows: minmax(180px, auto) minmax(280px, 1fr);
     gap: 16px;
   }
 
-  .leftTextZone,
-  .rightTextZone {
-    grid-column: 1;
-    grid-row: 1;
+  .textZone {
     min-height: 180px;
-    justify-content: flex-start;
+    order: 1;
   }
 
   .visualZone {
-    grid-column: 1;
-    grid-row: 2;
+    order: 2;
   }
 
   .textCard {
