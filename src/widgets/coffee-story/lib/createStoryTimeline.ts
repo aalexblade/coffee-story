@@ -27,6 +27,12 @@ export function createStoryTimeline({
     espressoLiquid,
     espressoCrema,
     espressoStream,
+
+    cortado,
+    cortadoGlass,
+    cortadoLiquid,
+    cortadoMilk,
+    cortadoStream,
   } = visual;
 
   if (
@@ -38,11 +44,19 @@ export function createStoryTimeline({
     !espressoCup ||
     !espressoLiquid ||
     !espressoCrema ||
-    !espressoStream
+    !espressoStream ||
+    !cortado ||
+    !cortadoGlass ||
+    !cortadoLiquid ||
+    !cortadoMilk ||
+    !cortadoStream
   ) {
     return gsap.timeline();
   }
 
+  /*
+   * Initial text state
+   */
   gsap.set(textCards, {
     autoAlpha: 0,
     y: TEXT_OFFSET,
@@ -54,9 +68,8 @@ export function createStoryTimeline({
   });
 
   /*
-   * Initial visual state
+   * Initial visual state: HERO & ESPRESSO
    */
-
   gsap.set(hero, {
     autoAlpha: 1,
     scale: 1,
@@ -90,9 +103,6 @@ export function createStoryTimeline({
     transformOrigin: 'center center',
   });
 
-  /*
-   * ЗМІНЕНО: Замість scaleY використовуємо атрибут y (старт із 360)
-   */
   gsap.set(espressoLiquid, {
     attr: {
       y: 360,
@@ -111,6 +121,32 @@ export function createStoryTimeline({
     transformOrigin: 'top center',
   });
 
+  /*
+   * Initial visual state: CORTADO
+   */
+  gsap.set(cortado, {
+    autoAlpha: 1,
+  });
+
+  gsap.set(cortadoGlass, {
+    autoAlpha: 0,
+    scale: 0.92,
+    y: 30,
+    transformOrigin: 'center center',
+  });
+
+  gsap.set([cortadoLiquid, cortadoMilk], {
+    attr: {
+      y: 350,
+    },
+  });
+
+  gsap.set(cortadoStream, {
+    autoAlpha: 0,
+    scaleY: 0,
+    transformOrigin: 'top center',
+  });
+
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: container,
@@ -124,11 +160,9 @@ export function createStoryTimeline({
   });
 
   /*
-   * STEP 0 → STEP 1
-   *
-   * HERO → ANIMATED ESPRESSO
+   * STEP 00 → STEP 01
+   * HERO → ESPRESSO
    */
-
   tl.to(
     coffeePackage,
     {
@@ -174,9 +208,6 @@ export function createStoryTimeline({
     ease: 'power2.out',
   });
 
-  /*
-   * ЗМІНЕНО: Замість scaleY: 1 анімуємо y до 220 для реального підйому рідини
-   */
   tl.to(
     espressoLiquid,
     {
@@ -203,10 +234,7 @@ export function createStoryTimeline({
     ease: 'power2.out',
   });
 
-  /*
-   * Hero → Espresso text
-   */
-
+  // Text: Hero (0) -> Espresso (1)
   tl.to(
     textCards[0],
     {
@@ -234,11 +262,110 @@ export function createStoryTimeline({
   );
 
   /*
-   * Remaining text transitions
+   * STEP 01 → STEP 02
+   * ESPRESSO → CORTADO
    */
+  tl.to(
+    espressoCup,
+    {
+      autoAlpha: 0,
+      scale: 0.94,
+      y: -10,
+      duration: STEP_DURATION,
+      ease: 'power2.inOut',
+    },
+    `+=${HOLD_DURATION}`,
+  );
 
-  textCards.slice(1).forEach((card, index) => {
-    const currentIndex = index + 1;
+  tl.to(
+    espressoCrema,
+    {
+      autoAlpha: 0,
+      duration: 0.5,
+      ease: 'power2.inOut',
+    },
+    '<',
+  );
+
+  tl.to(
+    cortadoGlass,
+    {
+      autoAlpha: 1,
+      scale: 1,
+      y: 0,
+      duration: STEP_DURATION,
+      ease: 'power3.out',
+    },
+    '<0.25',
+  );
+
+  tl.to(cortadoStream, {
+    autoAlpha: 1,
+    scaleY: 1,
+    duration: 0.35,
+    ease: 'power2.out',
+  });
+
+  // Кавова основа з'являється і заливається молоком
+  tl.to(
+    cortadoLiquid,
+    {
+      attr: {
+        y: 285,
+      },
+      duration: 0.6,
+      ease: 'power2.out',
+    },
+    '<',
+  );
+
+  tl.to(cortadoMilk, {
+    attr: {
+      y: 222,
+    },
+    duration: 0.8,
+    ease: 'power2.out',
+  });
+
+  tl.to(cortadoStream, {
+    autoAlpha: 0,
+    scaleY: 0,
+    duration: 0.3,
+    ease: 'power2.in',
+  });
+
+  // Text: Espresso (1) -> Cortado (2)
+  tl.to(
+    textCards[1],
+    {
+      autoAlpha: 0,
+      y: -TEXT_OFFSET,
+      duration: STEP_DURATION,
+      ease: 'power2.inOut',
+    },
+    '<',
+  );
+
+  tl.fromTo(
+    textCards[2],
+    {
+      autoAlpha: 0,
+      y: TEXT_OFFSET,
+    },
+    {
+      autoAlpha: 1,
+      y: 0,
+      duration: STEP_DURATION,
+      ease: 'power2.out',
+    },
+    '<',
+  );
+
+  /*
+   * Remaining text transitions (if any beyond step 2)
+   */
+  textCards.slice(2).forEach((card, index) => {
+    const currentIndex = index + 2;
     const nextCard = textCards[currentIndex + 1];
 
     if (!nextCard) {
@@ -254,17 +381,6 @@ export function createStoryTimeline({
         ease: 'power2.inOut',
       },
       `+=${HOLD_DURATION}`,
-    );
-
-    tl.to(
-      root,
-      {
-        scale: currentIndex % 2 === 0 ? 1.04 : 1,
-        rotation: currentIndex % 2 === 0 ? 1 : -1,
-        duration: STEP_DURATION,
-        ease: 'power2.inOut',
-      },
-      '<',
     );
 
     tl.fromTo(
