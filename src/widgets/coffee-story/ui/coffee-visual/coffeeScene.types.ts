@@ -8,18 +8,14 @@ export interface CoffeeSceneRefs {
   espressoLiquid: SVGRectElement | null;
   espressoCrema: SVGGElement | null;
   espressoStream: SVGPathElement | null;
+
+  cortado: SVGGElement | null;
+  cortadoGlass: SVGGElement | null;
+  cortadoLiquid: SVGRectElement | null;
+  cortadoMilk: SVGRectElement | null;
+  cortadoStream: SVGPathElement | null;
 }
 
-export interface CoffeeVisualHandle {
-  readonly root: HTMLDivElement | null;
-
-  readonly hero: SVGGElement | null;
-  readonly package: SVGGElement | null;
-  readonly beans: SVGGElement | null;
-
-  readonly espresso: SVGGElement | null;
-  readonly espressoCup: SVGGElement | null;
-  readonly espressoLiquid: SVGRectElement | null;
-  readonly espressoCrema: SVGGElement | null;
-  readonly espressoStream: SVGPathElement | null;
+export interface CoffeeVisualHandle extends CoffeeSceneRefs {
+  readonly root: SVGSVGElement | null;
 }
