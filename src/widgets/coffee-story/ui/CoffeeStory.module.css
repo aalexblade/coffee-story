@@ -12,8 +12,9 @@
 
 .stageGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
   align-items: center;
+  gap: clamp(32px, 6vw, 96px);
   width: 100%;
   height: 100%;
 }
@@ -27,18 +28,10 @@
 
 .textCard {
   position: absolute;
+  left: 0;
   width: min(100%, 420px);
-  opacity: 0;
   pointer-events: none;
   will-change: transform, opacity;
-}
-
-.textCard[data-side='left'] {
-  left: 0;
-}
-
-.textCard[data-side='right'] {
-  right: 0;
 }
 
 .tag {
@@ -72,42 +65,43 @@
   min-width: 0;
 }
 
-.visualContainer {
-  width: min(100%, 420px);
-  aspect-ratio: 4 / 5;
-  display: grid;
-  place-items: center;
-  will-change: transform;
-}
-
 @media (max-width: 900px) {
   .stageGrid {
     grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+    gap: 32px;
   }
 
-  .stageGrid > :last-child {
-    display: none;
+  .textCard {
+    width: min(100%, 360px);
   }
 }
 
 @media (max-width: 640px) {
   .stageGrid {
     grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(280px, 1fr);
+    grid-template-rows: minmax(180px, auto) minmax(280px, 1fr);
+    gap: 16px;
   }
 
   .textZone {
     min-height: 180px;
+    order: 1;
   }
 
-  .stageGrid > :last-child {
-    display: none;
+  .visualZone {
+    order: 2;
   }
 
   .textCard {
-    position: absolute;
-    width: min(100%, 420px);
-    pointer-events: none;
-    will-change: transform, opacity;
+    left: 0;
+    width: 100%;
+  }
+
+  .title {
+    font-size: clamp(2rem, 10vw, 3rem);
+  }
+
+  .description {
+    font-size: 0.95rem;
   }
 }
