@@ -1,6 +1,10 @@
 import { gsap } from '@/shared/lib/gsap';
 import type { CoffeeVisualHandle } from '../../ui/coffee-visual/coffeeScene.types';
-import { HOLD_DURATION, STEP_DURATION, TEXT_OFFSET } from './timeline.constants';
+import {
+  HOLD_DURATION,
+  STEP_DURATION,
+  TEXT_OFFSET,
+} from './timeline.constants';
 
 export function animateEspressoToCortado(
   tl: gsap.core.Timeline,
@@ -16,6 +20,7 @@ export function animateEspressoToCortado(
     cortadoMilk,
   } = visual;
 
+  // Espresso → out
   tl.to(
     espressoCup,
     {
@@ -38,6 +43,7 @@ export function animateEspressoToCortado(
     '<',
   );
 
+  // Cortado glass → in
   tl.to(
     cortadoGlass,
     {
@@ -50,6 +56,7 @@ export function animateEspressoToCortado(
     '<0.25',
   );
 
+  // Milk starts flowing
   tl.to(cortadoStream, {
     autoAlpha: 1,
     scaleY: 1,
@@ -57,6 +64,7 @@ export function animateEspressoToCortado(
     ease: 'power2.out',
   });
 
+  // Coffee base rises to 50% level
   tl.to(
     cortadoLiquid,
     {
@@ -69,14 +77,16 @@ export function animateEspressoToCortado(
     '<',
   );
 
+  // Milk rises above coffee layer to 100% level
   tl.to(cortadoMilk, {
     attr: {
-      y: 222,
+      y: 220,
     },
     duration: 0.8,
     ease: 'power2.out',
   });
 
+  // Stop pouring
   tl.to(cortadoStream, {
     autoAlpha: 0,
     scaleY: 0,
@@ -84,7 +94,7 @@ export function animateEspressoToCortado(
     ease: 'power2.in',
   });
 
-  // Text transition: Step 1 -> Step 2
+  // Text: Espresso → Cortado
   if (textCards[1]) {
     tl.to(
       textCards[1],
