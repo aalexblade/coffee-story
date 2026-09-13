@@ -8,13 +8,16 @@
 .packageGroup,
 .beansGroup,
 .espressoGroup,
-.espressoStream {
+.espressoStream,
+.cortadoGroup,
+.cortadoStream {
   transform-box: fill-box;
   transform-origin: center;
   will-change: transform, opacity;
 }
 
-.espressoStream {
+.espressoStream,
+.cortadoStream {
   transform-origin: top center;
 }
 
