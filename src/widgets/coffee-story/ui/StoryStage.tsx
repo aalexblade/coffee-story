@@ -10,41 +10,25 @@ interface StoryStageProps {
   registerTextRef: (element: HTMLDivElement | null, index: number) => void;
 }
 
-export function StoryStage({ visualRef, registerTextRef }: StoryStageProps) {
+export function StoryStage({
+  visualRef,
+  registerTextRef,
+}: StoryStageProps) {
   return (
     <Container className={styles.stageContainer}>
       <div className={styles.stageGrid}>
-        {/* Left column for even steps (Hero, Cortado, Cappuccino) */}
-        <div className={styles.leftTextZone}>
-          {STORY_STEPS.map((step, index) => {
-            if (index % 2 !== 0) return null;
-            return (
-              <StoryText
-                key={step.id}
-                step={step}
-                refCb={(element) => registerTextRef(element, index)}
-              />
-            );
-          })}
+        <div className={styles.textZone}>
+          {STORY_STEPS.map((step, index) => (
+            <StoryText
+              key={step.id}
+              step={step}
+              refCb={(element) => registerTextRef(element, index)}
+            />
+          ))}
         </div>
 
-        {/* Center column for visual scene */}
         <div className={styles.visualZone}>
           <CoffeeVisual ref={visualRef} />
-        </div>
-
-        {/* Right column for odd steps (Espresso, Flat White, Latte) */}
-        <div className={styles.rightTextZone}>
-          {STORY_STEPS.map((step, index) => {
-            if (index % 2 === 0) return null;
-            return (
-              <StoryText
-                key={step.id}
-                step={step}
-                refCb={(element) => registerTextRef(element, index)}
-              />
-            );
-          })}
         </div>
       </div>
     </Container>
