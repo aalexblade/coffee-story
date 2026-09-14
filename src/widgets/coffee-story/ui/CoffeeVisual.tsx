@@ -68,6 +68,24 @@ export const CoffeeVisual = forwardRef<CoffeeVisualHandle>((_, ref) => {
       get flatWhiteStream() {
         return sceneRef.current?.flatWhiteStream ?? null;
       },
+      get cappuccino() {
+        return sceneRef.current?.cappuccino ?? null;
+      },
+      get cappuccinoCup() {
+        return sceneRef.current?.cappuccinoCup ?? null;
+      },
+      get cappuccinoCoffee() {
+        return sceneRef.current?.cappuccinoCoffee ?? null;
+      },
+      get cappuccinoMilk() {
+        return sceneRef.current?.cappuccinoMilk ?? null;
+      },
+      get cappuccinoFoam() {
+        return sceneRef.current?.cappuccinoFoam ?? null;
+      },
+      get cappuccinoStream() {
+        return sceneRef.current?.cappuccinoStream ?? null;
+      },
     }),
     [],
   );
