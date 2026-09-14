@@ -30,6 +30,14 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
   const cortadoMilkRef = useRef<SVGRectElement>(null);
   const cortadoStreamRef = useRef<SVGPathElement>(null);
 
+  // Flat White refs
+  const flatWhiteRef = useRef<SVGGElement>(null);
+  const flatWhiteCupRef = useRef<SVGGElement>(null);
+  const flatWhiteLiquidRef = useRef<SVGRectElement>(null);
+  const flatWhiteMilkRef = useRef<SVGRectElement>(null);
+  const flatWhiteCremaRef = useRef<SVGGElement>(null);
+  const flatWhiteStreamRef = useRef<SVGPathElement>(null);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -74,6 +82,24 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
       },
       get cortadoStream() {
         return cortadoStreamRef.current;
+      },
+      get flatWhite() {
+        return flatWhiteRef.current;
+      },
+      get flatWhiteCup() {
+        return flatWhiteCupRef.current;
+      },
+      get flatWhiteLiquid() {
+        return flatWhiteLiquidRef.current;
+      },
+      get flatWhiteMilk() {
+        return flatWhiteMilkRef.current;
+      },
+      get flatWhiteCrema() {
+        return flatWhiteCremaRef.current;
+      },
+      get flatWhiteStream() {
+        return flatWhiteStreamRef.current;
       },
     }),
     [],
@@ -205,9 +231,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           strokeLinecap="round"
         />
 
-        {/* Liquid layers rendered FIRST behind the glass outlines */}
         <g clipPath={`url(#${cortadoClipId})`}>
-          {/* Coffee — bottom 50% */}
           <rect
             ref={cortadoLiquidRef}
             x="127"
@@ -217,7 +241,6 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             fill="#75442F"
           />
 
-          {/* Milk — top 50% */}
           <rect
             ref={cortadoMilkRef}
             x="127"
@@ -228,7 +251,6 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           />
         </g>
 
-        {/* Glass body & stroke rendered SECOND on top of liquids */}
         <g ref={cortadoGlassRef} filter={`url(#${shadowId})`}>
           <path
             d="M125 220 H275 L262 350 Q200 365 138 350 Z"
@@ -243,6 +265,60 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             strokeWidth="4"
             strokeLinecap="round"
           />
+        </g>
+      </g>
+
+      {/* FLAT WHITE SCENE */}
+      <g ref={flatWhiteRef}>
+        <path
+          ref={flatWhiteStreamRef}
+          d="M200 70 L200 205"
+          stroke="#3D2317"
+          strokeWidth="7"
+          strokeLinecap="round"
+        />
+
+        <g>
+          <rect
+            ref={flatWhiteLiquidRef}
+            x="112"
+            y="360"
+            width="176"
+            height="130"
+            fill="#3D2317"
+          />
+
+          <rect
+            ref={flatWhiteMilkRef}
+            x="112"
+            y="235"
+            width="176"
+            height="125"
+            fill="#DCC7AD"
+          />
+        </g>
+
+        <g ref={flatWhiteCupRef} filter={`url(#${shadowId})`}>
+          <path
+            d="M112 215 H288 C284 305 265 345 200 345 C135 345 116 305 112 215 Z"
+            fill="#F4E8D8"
+          />
+
+          <path
+            d="M280 230 C310 230 314 275 280 282"
+            stroke="#F4E8D8"
+            strokeWidth="12"
+            strokeLinecap="round"
+            fill="none"
+          />
+
+          <ellipse cx="200" cy="220" rx="88" ry="12" fill="#E7D5BD" />
+
+          <ellipse cx="200" cy="218" rx="76" ry="7" fill="#C68B59" />
+
+          <g ref={flatWhiteCremaRef}>
+            <ellipse cx="200" cy="218" rx="72" ry="5" fill="#D4A373" />
+          </g>
         </g>
       </g>
     </svg>
