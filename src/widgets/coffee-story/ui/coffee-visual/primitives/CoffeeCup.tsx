@@ -1,34 +1,44 @@
-import type { ReactNode } from 'react';
+import React, { useId } from 'react';
 
 interface CoffeeCupProps {
-  children?: ReactNode;
-  handle?: boolean;
+  id?: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export function CoffeeCup({
-  children,
-  handle = true,
+export const CoffeeCup: React.FC<CoffeeCupProps> = ({
+  id,
   className,
-}: CoffeeCupProps) {
+  children,
+}) => {
+  const clipId = useId();
+
   return (
-    <g className={className}>
+    <g id={id} className={className}>
+      <defs>
+        {/* Контур внутрішньої частини чашки для кліпування рідини */}
+        <clipPath id={clipId}>
+          <path d="M 120 220 C 120 340, 150 350, 200 350 C 250 350, 280 340, 280 220 Z" />
+        </clipPath>
+      </defs>
+
+      {/* Шари рідини, обрізані по контуру чашки */}
+      <g clipPath={`url(#${clipId})`}>{children}</g>
+
+      {/* Зовнішній контур / ручка / стінки чашки */}
       <path
-        d="M112 215 H288 C284 305 265 345 200 345 C135 345 116 305 112 215 Z"
-        fill="#F4E8D8"
+        d="M 120 220 C 120 340, 150 350, 200 350 C 250 350, 280 340, 280 220 Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="6"
       />
-
-      {handle && (
-        <path
-          d="M280 230 C310 230 314 275 280 282"
-          stroke="#F4E8D8"
-          strokeWidth="12"
-          strokeLinecap="round"
-          fill="none"
-        />
-      )}
-
-      {children}
+      {/* Ручка чашки */}
+      <path
+        d="M 280 240 C 310 240, 310 300, 280 300"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="6"
+      />
     </g>
   );
-}
+};
