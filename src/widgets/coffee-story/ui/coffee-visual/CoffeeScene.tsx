@@ -1,9 +1,15 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useId, useImperativeHandle, useRef } from 'react';
 import type { CoffeeVisualHandle } from './coffeeScene.types';
 import styles from './CoffeeScene.module.css';
 
 export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
   const rootRef = useRef<SVGSVGElement>(null);
+
+  // Generate unique IDs for SVG defs
+  const rawId = useId();
+  const shadowId = `sceneShadow-${rawId}`;
+  const espressoClipId = `espressoCupClip-${rawId}`;
+  const cortadoClipId = `cortadoClip-${rawId}`;
 
   // Hero refs
   const heroRef = useRef<SVGGElement>(null);
@@ -30,55 +36,42 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
       get root() {
         return rootRef.current;
       },
-
       get hero() {
         return heroRef.current;
       },
-
       get package() {
         return packageRef.current;
       },
-
       get beans() {
         return beansRef.current;
       },
-
       get espresso() {
         return espressoRef.current;
       },
-
       get espressoCup() {
         return espressoCupRef.current;
       },
-
       get espressoLiquid() {
         return espressoLiquidRef.current;
       },
-
       get espressoCrema() {
         return espressoCremaRef.current;
       },
-
       get espressoStream() {
         return espressoStreamRef.current;
       },
-
       get cortado() {
         return cortadoRef.current;
       },
-
       get cortadoGlass() {
         return cortadoGlassRef.current;
       },
-
       get cortadoLiquid() {
         return cortadoLiquidRef.current;
       },
-
       get cortadoMilk() {
         return cortadoMilkRef.current;
       },
-
       get cortadoStream() {
         return cortadoStreamRef.current;
       },
@@ -95,7 +88,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <filter id="sceneShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id={shadowId} x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow
             dx="0"
             dy="12"
@@ -105,18 +98,18 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           />
         </filter>
 
-        <clipPath id="espressoCupClip">
+        <clipPath id={espressoClipId}>
           <path d="M120 220 H280 C275 320 255 340 200 340 C145 340 125 320 120 220 Z" />
         </clipPath>
 
-        <clipPath id="cortadoClip">
+        <clipPath id={cortadoClipId}>
           <path d="M125 220 H275 L262 350 Q200 365 138 350 Z" />
         </clipPath>
       </defs>
 
       {/* HERO SCENE */}
       <g ref={heroRef}>
-        <g ref={packageRef} filter="url(#sceneShadow)">
+        <g ref={packageRef} filter={`url(#${shadowId})`}>
           <rect
             x="140"
             y="110"
@@ -135,7 +128,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           />
         </g>
 
-        <g ref={beansRef} filter="url(#sceneShadow)">
+        <g ref={beansRef} filter={`url(#${shadowId})`}>
           <ellipse
             cx="110"
             cy="270"
@@ -173,7 +166,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           strokeLinecap="round"
         />
 
-        <g ref={espressoCupRef} filter="url(#sceneShadow)">
+        <g ref={espressoCupRef} filter={`url(#${shadowId})`}>
           <path
             d="M120 220 H280 C275 320 255 340 200 340 C145 340 125 320 120 220 Z"
             fill="#F4E8D8"
@@ -185,7 +178,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             strokeLinecap="round"
             fill="none"
           />
-          <g clipPath="url(#espressoCupClip)">
+          <g clipPath={`url(#${espressoClipId})`}>
             <rect
               ref={espressoLiquidRef}
               x="110"
@@ -212,23 +205,8 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           strokeLinecap="round"
         />
 
-        <g ref={cortadoGlassRef} filter="url(#sceneShadow)">
-          <path
-            d="M125 220 H275 L262 350 Q200 365 138 350 Z"
-            fill="#E8E0D7"
-            fillOpacity="0.28"
-            stroke="#CFC4B8"
-            strokeWidth="3"
-          />
-          <path
-            d="M125 220 H275"
-            stroke="#BFB2A4"
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-        </g>
-
-        <g clipPath="url(#cortadoClip)">
+        {/* Liquid layers rendered FIRST behind the glass outlines */}
+        <g clipPath={`url(#${cortadoClipId})`}>
           {/* Coffee — bottom 50% */}
           <rect
             ref={cortadoLiquidRef}
@@ -247,6 +225,23 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             width="146"
             height="65"
             fill="#DCC7AD"
+          />
+        </g>
+
+        {/* Glass body & stroke rendered SECOND on top of liquids */}
+        <g ref={cortadoGlassRef} filter={`url(#${shadowId})`}>
+          <path
+            d="M125 220 H275 L262 350 Q200 365 138 350 Z"
+            fill="#E8E0D7"
+            fillOpacity="0.28"
+            stroke="#CFC4B8"
+            strokeWidth="3"
+          />
+          <path
+            d="M125 220 H275"
+            stroke="#BFB2A4"
+            strokeWidth="4"
+            strokeLinecap="round"
           />
         </g>
       </g>
