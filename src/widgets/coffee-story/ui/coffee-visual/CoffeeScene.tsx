@@ -38,6 +38,14 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
   const flatWhiteCremaRef = useRef<SVGGElement>(null);
   const flatWhiteStreamRef = useRef<SVGPathElement>(null);
 
+  // Cappuccino refs
+  const cappuccinoRef = useRef<SVGGElement>(null);
+  const cappuccinoCupRef = useRef<SVGGElement>(null);
+  const cappuccinoCoffeeRef = useRef<SVGRectElement>(null);
+  const cappuccinoMilkRef = useRef<SVGRectElement>(null);
+  const cappuccinoFoamRef = useRef<SVGGElement>(null);
+  const cappuccinoStreamRef = useRef<SVGPathElement>(null);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -100,6 +108,24 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
       },
       get flatWhiteStream() {
         return flatWhiteStreamRef.current;
+      },
+      get cappuccino() {
+        return cappuccinoRef.current;
+      },
+      get cappuccinoCup() {
+        return cappuccinoCupRef.current;
+      },
+      get cappuccinoCoffee() {
+        return cappuccinoCoffeeRef.current;
+      },
+      get cappuccinoMilk() {
+        return cappuccinoMilkRef.current;
+      },
+      get cappuccinoFoam() {
+        return cappuccinoFoamRef.current;
+      },
+      get cappuccinoStream() {
+        return cappuccinoStreamRef.current;
       },
     }),
     [],
@@ -319,6 +345,68 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           <g ref={flatWhiteCremaRef}>
             <ellipse cx="200" cy="218" rx="72" ry="5" fill="#D4A373" />
           </g>
+        </g>
+      </g>
+
+      {/* CAPPUCCINO SCENE */}
+      <g ref={cappuccinoRef}>
+        <path
+          ref={cappuccinoStreamRef}
+          d="M200 70 L200 210"
+          stroke="#DCC7AD"
+          strokeWidth="8"
+          strokeLinecap="round"
+        />
+
+        {/* Coffee */}
+        <rect
+          ref={cappuccinoCoffeeRef}
+          x="105"
+          y="360"
+          width="190"
+          height="130"
+          fill="#3D2317"
+        />
+
+        {/* Steamed milk */}
+        <rect
+          ref={cappuccinoMilkRef}
+          x="105"
+          y="285"
+          width="190"
+          height="75"
+          fill="#DCC7AD"
+        />
+
+        {/* Wide cappuccino cup */}
+        <g ref={cappuccinoCupRef} filter={`url(#${shadowId})`}>
+          <path
+            d="M105 220 H295 C292 300 270 345 200 345 C130 345 108 300 105 220 Z"
+            fill="#F4E8D8"
+          />
+
+          {/* Handle */}
+          <path
+            d="M288 235 C320 235 324 285 287 292"
+            stroke="#F4E8D8"
+            strokeWidth="13"
+            strokeLinecap="round"
+            fill="none"
+          />
+
+          {/* Coffee surface */}
+          <ellipse cx="200" cy="220" rx="95" ry="14" fill="#8B553B" />
+        </g>
+
+        {/* Thick foam */}
+        <g ref={cappuccinoFoamRef}>
+          <ellipse cx="200" cy="218" rx="88" ry="17" fill="#E8D8C3" />
+          <ellipse cx="200" cy="214" rx="70" ry="10" fill="#F4E8D8" />
+
+          <circle cx="165" cy="211" r="7" fill="#E1CDB5" />
+          <circle cx="190" cy="207" r="5" fill="#E1CDB5" />
+          <circle cx="220" cy="212" r="6" fill="#E1CDB5" />
+          <circle cx="245" cy="208" r="4" fill="#E1CDB5" />
         </g>
       </g>
     </svg>
