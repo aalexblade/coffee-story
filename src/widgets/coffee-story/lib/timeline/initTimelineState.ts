@@ -1,6 +1,5 @@
 import { gsap } from '@/shared/lib/gsap';
 import type { CoffeeVisualHandle } from '../../ui/coffee-visual/coffeeScene.types';
-import { TEXT_OFFSET } from './timeline.constants';
 
 export function initTimelineState(
   visual: CoffeeVisualHandle,
@@ -8,7 +7,7 @@ export function initTimelineState(
 ): void {
   const {
     hero,
-    package: coffeePackage,
+    package: packageEl,
     beans,
     espresso,
     espressoCup,
@@ -20,22 +19,30 @@ export function initTimelineState(
     cortadoLiquid,
     cortadoMilk,
     cortadoStream,
+    flatWhite,
+    flatWhiteCup,
+    flatWhiteLiquid,
+    flatWhiteMilk,
+    flatWhiteCrema,
+    flatWhiteStream,
   } = visual;
 
   /*
-   * Initial text state
+   * Initial text cards state
    */
-  gsap.set(textCards, {
-    autoAlpha: 0,
-    y: TEXT_OFFSET,
+  textCards.forEach((card, index) => {
+    if (index === 0) {
+      gsap.set(card, {
+        autoAlpha: 1,
+        y: 0,
+      });
+    } else {
+      gsap.set(card, {
+        autoAlpha: 0,
+        y: 40,
+      });
+    }
   });
-
-  if (textCards[0]) {
-    gsap.set(textCards[0], {
-      autoAlpha: 1,
-      y: 0,
-    });
-  }
 
   /*
    * Initial visual state: HERO
@@ -43,14 +50,13 @@ export function initTimelineState(
   if (hero) {
     gsap.set(hero, {
       autoAlpha: 1,
-      scale: 1,
-      transformOrigin: 'center center',
     });
   }
 
-  if (coffeePackage) {
-    gsap.set(coffeePackage, {
+  if (packageEl) {
+    gsap.set(packageEl, {
       autoAlpha: 1,
+      x: 0,
       y: 0,
       scale: 1,
       rotation: 0,
@@ -63,7 +69,6 @@ export function initTimelineState(
       autoAlpha: 1,
       y: 0,
       scale: 1,
-      rotation: 0,
       transformOrigin: 'center center',
     });
   }
@@ -80,8 +85,8 @@ export function initTimelineState(
   if (espressoCup) {
     gsap.set(espressoCup, {
       autoAlpha: 0,
-      y: 50,
-      scale: 0.88,
+      y: 40,
+      scale: 0.9,
       transformOrigin: 'center center',
     });
   }
@@ -97,7 +102,7 @@ export function initTimelineState(
   if (espressoCrema) {
     gsap.set(espressoCrema, {
       autoAlpha: 0,
-      scaleX: 0.8,
+      scaleX: 0.7,
       transformOrigin: 'center center',
     });
   }
@@ -122,8 +127,8 @@ export function initTimelineState(
   if (cortadoGlass) {
     gsap.set(cortadoGlass, {
       autoAlpha: 0,
+      y: 35,
       scale: 0.92,
-      y: 30,
       transformOrigin: 'center center',
     });
   }
@@ -131,7 +136,7 @@ export function initTimelineState(
   if (cortadoLiquid) {
     gsap.set(cortadoLiquid, {
       attr: {
-        y: 370,
+        y: 360,
       },
     });
   }
@@ -139,13 +144,63 @@ export function initTimelineState(
   if (cortadoMilk) {
     gsap.set(cortadoMilk, {
       attr: {
-        y: 285,
+        y: 360,
       },
     });
   }
 
   if (cortadoStream) {
     gsap.set(cortadoStream, {
+      autoAlpha: 0,
+      scaleY: 0,
+      transformOrigin: 'top center',
+    });
+  }
+
+  /*
+   * Initial visual state: FLAT WHITE
+   */
+  if (flatWhite) {
+    gsap.set(flatWhite, {
+      autoAlpha: 1,
+    });
+  }
+
+  if (flatWhiteCup) {
+    gsap.set(flatWhiteCup, {
+      autoAlpha: 0,
+      y: 35,
+      scale: 0.92,
+      transformOrigin: 'center center',
+    });
+  }
+
+  if (flatWhiteLiquid) {
+    gsap.set(flatWhiteLiquid, {
+      attr: {
+        y: 360,
+      },
+    });
+  }
+
+  if (flatWhiteMilk) {
+    gsap.set(flatWhiteMilk, {
+      attr: {
+        y: 360,
+      },
+    });
+  }
+
+  if (flatWhiteCrema) {
+    gsap.set(flatWhiteCrema, {
+      autoAlpha: 0,
+      scaleX: 0.8,
+      transformOrigin: 'center center',
+    });
+  }
+
+  if (flatWhiteStream) {
+    gsap.set(flatWhiteStream, {
       autoAlpha: 0,
       scaleY: 0,
       transformOrigin: 'top center',
