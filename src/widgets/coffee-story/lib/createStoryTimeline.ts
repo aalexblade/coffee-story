@@ -1,5 +1,6 @@
 import { gsap } from '@/shared/lib/gsap';
 import type { CoffeeVisualHandle } from '../ui/coffee-visual/coffeeScene.types';
+import { animateCortadoToFlatWhite } from './timeline/animateCortadoToFlatWhite';
 import { animateEspressoToCortado } from './timeline/animateEspressoToCortado';
 import { animateHeroToEspresso } from './timeline/animateHeroToEspresso';
 import { initTimelineState } from './timeline/initTimelineState';
@@ -9,7 +10,7 @@ import {
   TEXT_OFFSET,
 } from './timeline/timeline.constants';
 
-interface TimelineParams {
+interface CreateStoryTimelineParams {
   container: HTMLElement;
   visual: CoffeeVisualHandle;
   textCards: HTMLElement[];
@@ -19,11 +20,10 @@ export function createStoryTimeline({
   container,
   visual,
   textCards,
-}: TimelineParams): gsap.core.Timeline {
+}: CreateStoryTimelineParams): gsap.core.Timeline | null {
   const {
-    root,
     hero,
-    package: coffeePackage,
+    package: packageEl,
     beans,
     espresso,
     espressoCup,
@@ -35,12 +35,17 @@ export function createStoryTimeline({
     cortadoLiquid,
     cortadoMilk,
     cortadoStream,
+    flatWhite,
+    flatWhiteCup,
+    flatWhiteLiquid,
+    flatWhiteMilk,
+    flatWhiteCrema,
+    flatWhiteStream,
   } = visual;
 
   if (
-    !root ||
     !hero ||
-    !coffeePackage ||
+    !packageEl ||
     !beans ||
     !espresso ||
     !espressoCup ||
@@ -51,24 +56,29 @@ export function createStoryTimeline({
     !cortadoGlass ||
     !cortadoLiquid ||
     !cortadoMilk ||
-    !cortadoStream
+    !cortadoStream ||
+    !flatWhite ||
+    !flatWhiteCup ||
+    !flatWhiteLiquid ||
+    !flatWhiteMilk ||
+    !flatWhiteCrema ||
+    !flatWhiteStream
   ) {
-    return gsap.timeline();
+    return null;
   }
 
-  // 1. Initialize states
+  // 1. Set initial visual and text states
   initTimelineState(visual, textCards);
 
-  // 2. Create ScrollTrigger timeline
+  // 2. Create master timeline
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: container,
       start: 'top top',
-      end: `+=${textCards.length * 100}%`,
+      end: '+=500%',
       pin: true,
-      scrub: 1,
+      scrub: 0.8,
       anticipatePin: 1,
-      invalidateOnRefresh: true,
     },
   });
 
@@ -78,28 +88,28 @@ export function createStoryTimeline({
   // 4. Step 01 -> Step 02 (Espresso -> Cortado)
   animateEspressoToCortado(tl, visual, textCards);
 
-  // 5. Remaining text transitions (if any cards exist past Step 2)
-  textCards.slice(2).forEach((card, index) => {
-    const currentIndex = index + 2;
-    const nextCard = textCards[currentIndex + 1];
+  // 5. Step 02 -> Step 03 (Cortado -> Flat White)
+  animateCortadoToFlatWhite(tl, visual, textCards);
 
-    if (!nextCard) {
-      return;
+  // 6. Temporary fallback for remaining text transitions (Step 03 onwards)
+  textCards.slice(3).forEach((card, index) => {
+    const prevCard = textCards[index + 3];
+
+    if (prevCard) {
+      tl.to(
+        prevCard,
+        {
+          autoAlpha: 0,
+          y: -TEXT_OFFSET,
+          duration: STEP_DURATION,
+          ease: 'power2.inOut',
+        },
+        `+=${HOLD_DURATION}`,
+      );
     }
 
-    tl.to(
-      card,
-      {
-        autoAlpha: 0,
-        y: -TEXT_OFFSET,
-        duration: STEP_DURATION,
-        ease: 'power2.inOut',
-      },
-      `+=${HOLD_DURATION}`,
-    );
-
     tl.fromTo(
-      nextCard,
+      card,
       {
         autoAlpha: 0,
         y: TEXT_OFFSET,
