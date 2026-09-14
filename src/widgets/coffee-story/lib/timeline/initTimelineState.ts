@@ -25,6 +25,12 @@ export function initTimelineState(
     flatWhiteMilk,
     flatWhiteCrema,
     flatWhiteStream,
+    cappuccino,
+    cappuccinoCup,
+    cappuccinoCoffee,
+    cappuccinoMilk,
+    cappuccinoFoam,
+    cappuccinoStream,
   } = visual;
 
   /*
@@ -201,6 +207,56 @@ export function initTimelineState(
 
   if (flatWhiteStream) {
     gsap.set(flatWhiteStream, {
+      autoAlpha: 0,
+      scaleY: 0,
+      transformOrigin: 'top center',
+    });
+  }
+
+  /*
+   * Initial visual state: CAPPUCCINO
+   */
+  if (cappuccino) {
+    gsap.set(cappuccino, {
+      autoAlpha: 1,
+    });
+  }
+
+  if (cappuccinoCup) {
+    gsap.set(cappuccinoCup, {
+      autoAlpha: 0,
+      y: 30,
+      scale: 0.9,
+      transformOrigin: 'center center',
+    });
+  }
+
+  if (cappuccinoCoffee) {
+    gsap.set(cappuccinoCoffee, {
+      attr: {
+        y: 360,
+      },
+    });
+  }
+
+  if (cappuccinoMilk) {
+    gsap.set(cappuccinoMilk, {
+      attr: {
+        y: 360,
+      },
+    });
+  }
+
+  if (cappuccinoFoam) {
+    gsap.set(cappuccinoFoam, {
+      autoAlpha: 0,
+      scale: 0.75,
+      transformOrigin: 'center center',
+    });
+  }
+
+  if (cappuccinoStream) {
+    gsap.set(cappuccinoStream, {
       autoAlpha: 0,
       scaleY: 0,
       transformOrigin: 'top center',
