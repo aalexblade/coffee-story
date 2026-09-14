@@ -3,50 +3,50 @@ import type { StoryStep } from './story.types';
 export const STORY_STEPS: StoryStep[] = [
   {
     id: 'hero',
-    tag: '00 / Origin',
-    title: 'From Bean to Ritual',
+    tag: 'Початок',
+    title: 'Зерно та Обсмажка',
     description:
-      'Every great coffee begins with carefully selected beans and the promise of a perfect extraction.',
+      'Все починається з відібраних зерен свіжого обсмажування. Саме вони задають основу смаку та аромату напою.',
     side: 'left',
   },
   {
     id: 'espresso',
-    tag: '01 / Extraction',
-    title: 'Rich Espresso',
+    tag: 'База',
+    title: 'Еспресо',
     description:
-      'A concentrated 30 ml shot with deep flavor, rich body and a dense golden crema.',
+      'Концентрований, насичений екстракт кави під високим тиском. Фундамент для більшості класичних напоїв.',
     side: 'right',
   },
   {
     id: 'cortado',
-    tag: '02 / Balance',
-    title: 'Cortado',
+    tag: '1:1',
+    title: 'Кортадо',
     description:
-      'Equal parts espresso and warm textured milk create a balanced and smooth cup.',
+      'Рівний баланс міцного еспресо та теплого збитого молока у співвідношенні 1:1, що пом’якшує гіркоту.',
     side: 'left',
   },
   {
     id: 'flat-white',
-    tag: '03 / Intensity',
-    title: 'Flat White',
+    tag: 'Мікропіна',
+    title: 'Флет Уайт',
     description:
-      'A double espresso combined with silky microfoam for a bold and velvety texture.',
+      'Подвійна порція еспресо з тонким шаром шовковистої мікропіни для вираженого кавового смаку.',
     side: 'right',
   },
   {
     id: 'cappuccino',
-    tag: '04 / Texture',
-    title: 'Cappuccino',
+    tag: 'Класика',
+    title: 'Капучино',
     description:
-      'Espresso, steamed milk and a generous layer of airy foam in perfect harmony.',
+      'Класичне поєднання еспресо, збитого молока та пишної молочної піни з оксамитовою текстурою.',
     side: 'left',
   },
   {
     id: 'latte',
-    tag: '05 / Finish',
-    title: 'Latte',
+    tag: 'Ніжність',
+    title: 'Лате',
     description:
-      'A softer, milk-forward coffee finished with delicate latte art.',
+      'Ніжний молочний напій у високому скляному стакані з м’яким кавовим смаком та витонченим лате-артом.',
     side: 'right',
   },
 ];
