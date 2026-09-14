@@ -2,6 +2,7 @@ import { gsap } from '@/shared/lib/gsap';
 import type { CoffeeVisualHandle } from '../ui/coffee-visual/coffeeScene.types';
 import { animateCortadoToFlatWhite } from './timeline/animateCortadoToFlatWhite';
 import { animateEspressoToCortado } from './timeline/animateEspressoToCortado';
+import { animateFlatWhiteToCappuccino } from './timeline/animateFlatWhiteToCappuccino';
 import { animateHeroToEspresso } from './timeline/animateHeroToEspresso';
 import { initTimelineState } from './timeline/initTimelineState';
 import {
@@ -41,6 +42,12 @@ export function createStoryTimeline({
     flatWhiteMilk,
     flatWhiteCrema,
     flatWhiteStream,
+    cappuccino,
+    cappuccinoCup,
+    cappuccinoCoffee,
+    cappuccinoMilk,
+    cappuccinoFoam,
+    cappuccinoStream,
   } = visual;
 
   if (
@@ -62,7 +69,13 @@ export function createStoryTimeline({
     !flatWhiteLiquid ||
     !flatWhiteMilk ||
     !flatWhiteCrema ||
-    !flatWhiteStream
+    !flatWhiteStream ||
+    !cappuccino ||
+    !cappuccinoCup ||
+    !cappuccinoCoffee ||
+    !cappuccinoMilk ||
+    !cappuccinoFoam ||
+    !cappuccinoStream
   ) {
     return null;
   }
@@ -75,7 +88,7 @@ export function createStoryTimeline({
     scrollTrigger: {
       trigger: container,
       start: 'top top',
-      end: '+=500%',
+      end: '+=600%',
       pin: true,
       scrub: 0.8,
       anticipatePin: 1,
@@ -91,9 +104,12 @@ export function createStoryTimeline({
   // 5. Step 02 -> Step 03 (Cortado -> Flat White)
   animateCortadoToFlatWhite(tl, visual, textCards);
 
-  // 6. Temporary fallback for remaining text transitions (Step 03 onwards)
-  textCards.slice(3).forEach((card, index) => {
-    const prevCard = textCards[index + 3];
+  // 6. Step 03 -> Step 04 (Flat White -> Cappuccino)
+  animateFlatWhiteToCappuccino(tl, visual, textCards);
+
+  // 7. Temporary fallback for remaining text transitions (Step 04 onwards -> Latte)
+  textCards.slice(5).forEach((card, index) => {
+    const prevCard = textCards[index + 4];
 
     if (prevCard) {
       tl.to(
