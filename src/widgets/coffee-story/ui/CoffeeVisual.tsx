@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import type { CoffeeVisualHandle } from './coffee-visual/coffeeScene.types';
 import { CoffeeScene } from './coffee-visual/CoffeeScene';
@@ -85,6 +87,27 @@ export const CoffeeVisual = forwardRef<CoffeeVisualHandle>((_, ref) => {
       },
       get cappuccinoStream() {
         return sceneRef.current?.cappuccinoStream ?? null;
+      },
+      get latte() {
+        return sceneRef.current?.latte ?? null;
+      },
+      get latteGlass() {
+        return sceneRef.current?.latteGlass ?? null;
+      },
+      get latteCoffee() {
+        return sceneRef.current?.latteCoffee ?? null;
+      },
+      get latteMilk() {
+        return sceneRef.current?.latteMilk ?? null;
+      },
+      get latteFoam() {
+        return sceneRef.current?.latteFoam ?? null;
+      },
+      get latteStream() {
+        return sceneRef.current?.latteStream ?? null;
+      },
+      get latteArt() {
+        return sceneRef.current?.latteArt ?? null;
       },
     }),
     [],

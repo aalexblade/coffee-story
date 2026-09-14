@@ -1,15 +1,13 @@
-import { forwardRef, useId, useImperativeHandle, useRef } from 'react';
-import type { CoffeeVisualHandle } from './coffeeScene.types';
+'use client';
+
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 import styles from './CoffeeScene.module.css';
+import type { CoffeeVisualHandle } from './coffeeScene.types';
+import { CoffeeCup } from './primitives/CoffeeCup';
+import { CoffeeGlass } from './primitives/CoffeeGlass';
 
 export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
   const rootRef = useRef<SVGSVGElement>(null);
-
-  // Generate unique IDs for SVG defs
-  const rawId = useId();
-  const shadowId = `sceneShadow-${rawId}`;
-  const espressoClipId = `espressoCupClip-${rawId}`;
-  const cortadoClipId = `cortadoClip-${rawId}`;
 
   // Hero refs
   const heroRef = useRef<SVGGElement>(null);
@@ -46,367 +44,360 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
   const cappuccinoFoamRef = useRef<SVGGElement>(null);
   const cappuccinoStreamRef = useRef<SVGPathElement>(null);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      get root() {
-        return rootRef.current;
-      },
-      get hero() {
-        return heroRef.current;
-      },
-      get package() {
-        return packageRef.current;
-      },
-      get beans() {
-        return beansRef.current;
-      },
-      get espresso() {
-        return espressoRef.current;
-      },
-      get espressoCup() {
-        return espressoCupRef.current;
-      },
-      get espressoLiquid() {
-        return espressoLiquidRef.current;
-      },
-      get espressoCrema() {
-        return espressoCremaRef.current;
-      },
-      get espressoStream() {
-        return espressoStreamRef.current;
-      },
-      get cortado() {
-        return cortadoRef.current;
-      },
-      get cortadoGlass() {
-        return cortadoGlassRef.current;
-      },
-      get cortadoLiquid() {
-        return cortadoLiquidRef.current;
-      },
-      get cortadoMilk() {
-        return cortadoMilkRef.current;
-      },
-      get cortadoStream() {
-        return cortadoStreamRef.current;
-      },
-      get flatWhite() {
-        return flatWhiteRef.current;
-      },
-      get flatWhiteCup() {
-        return flatWhiteCupRef.current;
-      },
-      get flatWhiteLiquid() {
-        return flatWhiteLiquidRef.current;
-      },
-      get flatWhiteMilk() {
-        return flatWhiteMilkRef.current;
-      },
-      get flatWhiteCrema() {
-        return flatWhiteCremaRef.current;
-      },
-      get flatWhiteStream() {
-        return flatWhiteStreamRef.current;
-      },
-      get cappuccino() {
-        return cappuccinoRef.current;
-      },
-      get cappuccinoCup() {
-        return cappuccinoCupRef.current;
-      },
-      get cappuccinoCoffee() {
-        return cappuccinoCoffeeRef.current;
-      },
-      get cappuccinoMilk() {
-        return cappuccinoMilkRef.current;
-      },
-      get cappuccinoFoam() {
-        return cappuccinoFoamRef.current;
-      },
-      get cappuccinoStream() {
-        return cappuccinoStreamRef.current;
-      },
-    }),
-    [],
-  );
+  // Latte refs
+  const latteRef = useRef<SVGGElement>(null);
+  const latteGlassRef = useRef<SVGGElement>(null);
+  const latteCoffeeRef = useRef<SVGRectElement>(null);
+  const latteMilkRef = useRef<SVGRectElement>(null);
+  const latteFoamRef = useRef<SVGGElement>(null);
+  const latteStreamRef = useRef<SVGPathElement>(null);
+  const latteArtRef = useRef<SVGGElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    get root() {
+      return rootRef.current;
+    },
+    get hero() {
+      return heroRef.current;
+    },
+    get package() {
+      return packageRef.current;
+    },
+    get beans() {
+      return beansRef.current;
+    },
+    get espresso() {
+      return espressoRef.current;
+    },
+    get espressoCup() {
+      return espressoCupRef.current;
+    },
+    get espressoLiquid() {
+      return espressoLiquidRef.current;
+    },
+    get espressoCrema() {
+      return espressoCremaRef.current;
+    },
+    get espressoStream() {
+      return espressoStreamRef.current;
+    },
+    get cortado() {
+      return cortadoRef.current;
+    },
+    get cortadoGlass() {
+      return cortadoGlassRef.current;
+    },
+    get cortadoLiquid() {
+      return cortadoLiquidRef.current;
+    },
+    get cortadoMilk() {
+      return cortadoMilkRef.current;
+    },
+    get cortadoStream() {
+      return cortadoStreamRef.current;
+    },
+    get flatWhite() {
+      return flatWhiteRef.current;
+    },
+    get flatWhiteCup() {
+      return flatWhiteCupRef.current;
+    },
+    get flatWhiteLiquid() {
+      return flatWhiteLiquidRef.current;
+    },
+    get flatWhiteMilk() {
+      return flatWhiteMilkRef.current;
+    },
+    get flatWhiteCrema() {
+      return flatWhiteCremaRef.current;
+    },
+    get flatWhiteStream() {
+      return flatWhiteStreamRef.current;
+    },
+    get cappuccino() {
+      return cappuccinoRef.current;
+    },
+    get cappuccinoCup() {
+      return cappuccinoCupRef.current;
+    },
+    get cappuccinoCoffee() {
+      return cappuccinoCoffeeRef.current;
+    },
+    get cappuccinoMilk() {
+      return cappuccinoMilkRef.current;
+    },
+    get cappuccinoFoam() {
+      return cappuccinoFoamRef.current;
+    },
+    get cappuccinoStream() {
+      return cappuccinoStreamRef.current;
+    },
+    get latte() {
+      return latteRef.current;
+    },
+    get latteGlass() {
+      return latteGlassRef.current;
+    },
+    get latteCoffee() {
+      return latteCoffeeRef.current;
+    },
+    get latteMilk() {
+      return latteMilkRef.current;
+    },
+    get latteFoam() {
+      return latteFoamRef.current;
+    },
+    get latteStream() {
+      return latteStreamRef.current;
+    },
+    get latteArt() {
+      return latteArtRef.current;
+    },
+  }));
 
   return (
     <svg
       ref={rootRef}
-      className={styles.scene}
       viewBox="0 0 400 400"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+      className={styles.svg}
+      aria-hidden="true"
     >
-      <defs>
-        <filter id={shadowId} x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow
-            dx="0"
-            dy="12"
-            stdDeviation="16"
-            floodColor="#2C1810"
-            floodOpacity="0.12"
-          />
-        </filter>
+      {/* Background Glow */}
+      <circle cx="200" cy="200" r="140" fill="#F4E8D8" fillOpacity="0.25" />
 
-        <clipPath id={espressoClipId}>
-          <path d="M120 220 H280 C275 320 255 340 200 340 C145 340 125 320 120 220 Z" />
-        </clipPath>
-
-        <clipPath id={cortadoClipId}>
-          <path d="M125 220 H275 L262 350 Q200 365 138 350 Z" />
-        </clipPath>
-      </defs>
-
-      {/* HERO SCENE */}
+      {/* Hero Scene */}
       <g ref={heroRef}>
-        <g ref={packageRef} filter={`url(#${shadowId})`}>
+        <g ref={packageRef}>
           <rect
             x="140"
-            y="110"
+            y="120"
             width="120"
             height="170"
             rx="16"
-            fill="#2C1810"
+            fill="#3C2A21"
           />
-          <rect x="155" y="130" width="90" height="130" rx="8" fill="#3D2317" />
-          <path
-            d="M170 170 C170 155 230 155 230 170 C230 200 170 190 170 215 C170 230 230 230 230 215"
-            stroke="#D4A373"
-            strokeWidth="8"
-            strokeLinecap="round"
-            fill="none"
+          <rect
+            x="155"
+            y="145"
+            width="90"
+            height="120"
+            rx="8"
+            fill="#D5CEA3"
           />
+          <circle cx="200" cy="185" r="18" fill="#1A120B" />
         </g>
-
-        <g ref={beansRef} filter={`url(#${shadowId})`}>
-          <ellipse
-            cx="110"
-            cy="270"
-            rx="16"
-            ry="11"
-            fill="#4A2810"
-            transform="rotate(-25 110 270)"
-          />
-          <ellipse
-            cx="285"
-            cy="280"
-            rx="14"
-            ry="10"
-            fill="#3D2317"
-            transform="rotate(35 285 280)"
-          />
-          <ellipse
-            cx="135"
-            cy="305"
-            rx="12"
-            ry="8"
-            fill="#5C3317"
-            transform="rotate(15 135 305)"
-          />
+        <g ref={beansRef}>
+          <ellipse cx="140" cy="310" rx="14" ry="9" fill="#1A120B" />
+          <ellipse cx="260" cy="315" rx="13" ry="8" fill="#1A120B" />
         </g>
       </g>
 
-      {/* ESPRESSO SCENE */}
+      {/* Espresso Scene */}
       <g ref={espressoRef}>
         <path
           ref={espressoStreamRef}
-          d="M200 80 L200 220"
-          stroke="#3D2317"
+          d="M200 70 L200 240"
+          stroke="#3C2A21"
           strokeWidth="6"
           strokeLinecap="round"
         />
-
-        <g ref={espressoCupRef} filter={`url(#${shadowId})`}>
-          <path
-            d="M120 220 H280 C275 320 255 340 200 340 C145 340 125 320 120 220 Z"
-            fill="#F4E8D8"
-          />
-          <path
-            d="M275 235 C305 235 310 285 270 290"
-            stroke="#F4E8D8"
-            strokeWidth="12"
-            strokeLinecap="round"
-            fill="none"
-          />
-          <g clipPath={`url(#${espressoClipId})`}>
+        <g ref={espressoCupRef}>
+          <CoffeeCup handle={true}>
             <rect
               ref={espressoLiquidRef}
-              x="110"
-              y="360"
-              width="180"
-              height="130"
-              fill="#2C1810"
+              x="120"
+              y="255"
+              width="160"
+              height="80"
+              fill="#3C2A21"
             />
             <g ref={espressoCremaRef}>
-              <ellipse cx="200" cy="225" rx="75" ry="8" fill="#C68B59" />
-              <ellipse cx="200" cy="225" rx="65" ry="5" fill="#D4A373" />
+              <ellipse
+                cx="200"
+                cy="255"
+                rx="76"
+                ry="12"
+                fill="#C68B59"
+              />
             </g>
-          </g>
+          </CoffeeCup>
         </g>
       </g>
 
-      {/* CORTADO SCENE */}
+      {/* Cortado Scene */}
       <g ref={cortadoRef}>
         <path
           ref={cortadoStreamRef}
-          d="M200 70 L200 225"
+          d="M200 60 L200 220"
+          stroke="#E8E0D7"
+          strokeWidth="7"
+          strokeLinecap="round"
+        />
+        <g ref={cortadoGlassRef}>
+          <CoffeeGlass>
+            <rect
+              ref={cortadoLiquidRef}
+              x="130"
+              y="285"
+              width="140"
+              height="60"
+              fill="#3C2A21"
+            />
+            <rect
+              ref={cortadoMilkRef}
+              x="130"
+              y="225"
+              width="140"
+              height="60"
+              fill="#E8E0D7"
+            />
+          </CoffeeGlass>
+        </g>
+      </g>
+
+      {/* Flat White Scene */}
+      <g ref={flatWhiteRef}>
+        <path
+          ref={flatWhiteStreamRef}
+          d="M200 60 L200 220"
+          stroke="#F4E8D8"
+          strokeWidth="8"
+          strokeLinecap="round"
+        />
+        <g ref={flatWhiteCupRef}>
+          <CoffeeCup handle={true}>
+            <rect
+              ref={flatWhiteLiquidRef}
+              x="115"
+              y="270"
+              width="170"
+              height="70"
+              fill="#3C2A21"
+            />
+            <rect
+              ref={flatWhiteMilkRef}
+              x="115"
+              y="220"
+              width="170"
+              height="50"
+              fill="#E8E0D7"
+            />
+            <g ref={flatWhiteCremaRef}>
+              <ellipse
+                cx="200"
+                cy="220"
+                rx="84"
+                ry="12"
+                fill="#D5CEA3"
+              />
+            </g>
+          </CoffeeCup>
+        </g>
+      </g>
+
+      {/* Cappuccino Scene */}
+      <g ref={cappuccinoRef}>
+        <path
+          ref={cappuccinoStreamRef}
+          d="M200 55 L200 215"
           stroke="#F4E8D8"
           strokeWidth="9"
           strokeLinecap="round"
         />
-
-        <g clipPath={`url(#${cortadoClipId})`}>
-          <rect
-            ref={cortadoLiquidRef}
-            x="127"
-            y="285"
-            width="146"
-            height="85"
-            fill="#75442F"
-          />
-
-          <rect
-            ref={cortadoMilkRef}
-            x="127"
-            y="220"
-            width="146"
-            height="65"
-            fill="#DCC7AD"
-          />
+        <g ref={cappuccinoCupRef}>
+          <CoffeeCup handle={true}>
+            <rect
+              ref={cappuccinoCoffeeRef}
+              x="115"
+              y="280"
+              width="170"
+              height="60"
+              fill="#3C2A21"
+            />
+            <rect
+              ref={cappuccinoMilkRef}
+              x="115"
+              y="220"
+              width="170"
+              height="60"
+              fill="#E8E0D7"
+            />
+          </CoffeeCup>
         </g>
-
-        <g ref={cortadoGlassRef} filter={`url(#${shadowId})`}>
+        <g ref={cappuccinoFoamRef}>
           <path
-            d="M125 220 H275 L262 350 Q200 365 138 350 Z"
-            fill="#E8E0D7"
-            fillOpacity="0.28"
-            stroke="#CFC4B8"
-            strokeWidth="3"
-          />
-          <path
-            d="M125 220 H275"
-            stroke="#BFB2A4"
-            strokeWidth="4"
-            strokeLinecap="round"
+            d="M112 215 C130 195 170 190 200 195 C230 190 270 195 288 215 Z"
+            fill="#FFF8F0"
           />
         </g>
       </g>
 
-      {/* FLAT WHITE SCENE */}
-      <g ref={flatWhiteRef}>
+      {/* Latte Scene */}
+      <g ref={latteRef}>
         <path
-          ref={flatWhiteStreamRef}
-          d="M200 70 L200 205"
-          stroke="#3D2317"
-          strokeWidth="7"
-          strokeLinecap="round"
-        />
-
-        <g>
-          <rect
-            ref={flatWhiteLiquidRef}
-            x="112"
-            y="360"
-            width="176"
-            height="130"
-            fill="#3D2317"
-          />
-
-          <rect
-            ref={flatWhiteMilkRef}
-            x="112"
-            y="235"
-            width="176"
-            height="125"
-            fill="#DCC7AD"
-          />
-        </g>
-
-        <g ref={flatWhiteCupRef} filter={`url(#${shadowId})`}>
-          <path
-            d="M112 215 H288 C284 305 265 345 200 345 C135 345 116 305 112 215 Z"
-            fill="#F4E8D8"
-          />
-
-          <path
-            d="M280 230 C310 230 314 275 280 282"
-            stroke="#F4E8D8"
-            strokeWidth="12"
-            strokeLinecap="round"
-            fill="none"
-          />
-
-          <ellipse cx="200" cy="220" rx="88" ry="12" fill="#E7D5BD" />
-
-          <ellipse cx="200" cy="218" rx="76" ry="7" fill="#C68B59" />
-
-          <g ref={flatWhiteCremaRef}>
-            <ellipse cx="200" cy="218" rx="72" ry="5" fill="#D4A373" />
-          </g>
-        </g>
-      </g>
-
-      {/* CAPPUCCINO SCENE */}
-      <g ref={cappuccinoRef}>
-        <path
-          ref={cappuccinoStreamRef}
-          d="M200 70 L200 210"
+          ref={latteStreamRef}
+          d="M200 55 L200 170"
           stroke="#DCC7AD"
-          strokeWidth="8"
+          strokeWidth="9"
           strokeLinecap="round"
         />
 
-        {/* Coffee */}
+        {/* Coffee Layer */}
         <rect
-          ref={cappuccinoCoffeeRef}
-          x="105"
-          y="360"
-          width="190"
-          height="130"
-          fill="#3D2317"
+          ref={latteCoffeeRef}
+          x="140"
+          y="300"
+          width="120"
+          height="50"
+          fill="#5A3425"
         />
 
-        {/* Steamed milk */}
+        {/* Milk Layer */}
         <rect
-          ref={cappuccinoMilkRef}
-          x="105"
-          y="285"
-          width="190"
-          height="75"
+          ref={latteMilkRef}
+          x="140"
+          y="175"
+          width="120"
+          height="125"
           fill="#DCC7AD"
         />
 
-        {/* Wide cappuccino cup */}
-        <g ref={cappuccinoCupRef} filter={`url(#${shadowId})`}>
+        {/* Tall Glass */}
+        <g ref={latteGlassRef}>
           <path
-            d="M105 220 H295 C292 300 270 345 200 345 C130 345 108 300 105 220 Z"
+            d="M140 165 H260 L250 350 Q200 365 150 350 Z"
+            fill="#E8E0D7"
+            fillOpacity="0.18"
+            stroke="#CFC4B8"
+            strokeWidth="3"
+          />
+          <ellipse
+            cx="200"
+            cy="165"
+            rx="60"
+            ry="10"
             fill="#F4E8D8"
+            fillOpacity="0.45"
           />
-
-          {/* Handle */}
-          <path
-            d="M288 235 C320 235 324 285 287 292"
-            stroke="#F4E8D8"
-            strokeWidth="13"
-            strokeLinecap="round"
-            fill="none"
-          />
-
-          {/* Coffee surface */}
-          <ellipse cx="200" cy="220" rx="95" ry="14" fill="#8B553B" />
         </g>
 
-        {/* Thick foam */}
-        <g ref={cappuccinoFoamRef}>
-          <ellipse cx="200" cy="218" rx="88" ry="17" fill="#E8D8C3" />
-          <ellipse cx="200" cy="214" rx="70" ry="10" fill="#F4E8D8" />
+        {/* Foam */}
+        <g ref={latteFoamRef}>
+          <ellipse cx="200" cy="164" rx="56" ry="8" fill="#F4E8D8" />
+        </g>
 
-          <circle cx="165" cy="211" r="7" fill="#E1CDB5" />
-          <circle cx="190" cy="207" r="5" fill="#E1CDB5" />
-          <circle cx="220" cy="212" r="6" fill="#E1CDB5" />
-          <circle cx="245" cy="208" r="4" fill="#E1CDB5" />
+        {/* Latte Art */}
+        <g ref={latteArtRef}>
+          <path
+            d="M200 160 C184 150 175 158 182 166 C188 173 200 180 200 180 C200 180 212 173 218 166 C225 158 216 150 200 160 Z"
+            fill="#C68B59"
+          />
+          <path
+            d="M200 180 C200 172 200 165 200 158"
+            stroke="#B77A50"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </g>
       </g>
     </svg>

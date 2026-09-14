@@ -28,6 +28,14 @@ export interface CoffeeSceneRefs {
   cappuccinoMilk: SVGRectElement | null;
   cappuccinoFoam: SVGGElement | null;
   cappuccinoStream: SVGPathElement | null;
+
+  latte: SVGGElement | null;
+  latteGlass: SVGGElement | null;
+  latteCoffee: SVGRectElement | null;
+  latteMilk: SVGRectElement | null;
+  latteFoam: SVGGElement | null;
+  latteStream: SVGPathElement | null;
+  latteArt: SVGGElement | null;
 }
 
 export interface CoffeeVisualHandle extends CoffeeSceneRefs {
