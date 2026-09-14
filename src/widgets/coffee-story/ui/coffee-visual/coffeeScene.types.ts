@@ -14,6 +14,13 @@ export interface CoffeeSceneRefs {
   cortadoLiquid: SVGRectElement | null;
   cortadoMilk: SVGRectElement | null;
   cortadoStream: SVGPathElement | null;
+
+  flatWhite: SVGGElement | null;
+  flatWhiteCup: SVGGElement | null;
+  flatWhiteLiquid: SVGRectElement | null;
+  flatWhiteMilk: SVGRectElement | null;
+  flatWhiteCrema: SVGGElement | null;
+  flatWhiteStream: SVGPathElement | null;
 }
 
 export interface CoffeeVisualHandle extends CoffeeSceneRefs {
