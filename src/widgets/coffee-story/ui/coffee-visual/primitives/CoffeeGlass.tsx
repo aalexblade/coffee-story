@@ -5,10 +5,7 @@ interface CoffeeGlassProps {
   className?: string;
 }
 
-export function CoffeeGlass({
-  children,
-  className,
-}: CoffeeGlassProps) {
+export function CoffeeGlass({ children, className }: CoffeeGlassProps) {
   return (
     <g className={className}>
       {children}
