@@ -39,7 +39,7 @@ export function initTimelineState({
     latteArt,
   } = visual;
 
-  // 1. Initial visual states
+  // 1. Initial visual states for main elements & groups
   gsap.set(
     [
       espressoCup,
@@ -47,6 +47,8 @@ export function initTimelineState({
       flatWhiteCup,
       cappuccinoCup,
       latteGlass,
+      espressoCrema,
+      flatWhiteCrema,
       cappuccinoFoam,
       latteFoam,
       latteArt,
@@ -73,17 +75,14 @@ export function initTimelineState({
     },
   );
 
-  // Liquids initial attributes
-  gsap.set([espressoLiquid, espressoCrema], { attr: { y: 340 } });
-  gsap.set(cortadoLiquid, { attr: { y: 350 } });
-  gsap.set(cortadoMilk, { attr: { y: 350 } });
-  gsap.set([flatWhiteLiquid, flatWhiteMilk, flatWhiteCrema], {
-    attr: { y: 345 },
-  });
+  // 2. Liquids initial attributes (only for <rect> elements)
+  gsap.set(espressoLiquid, { attr: { y: 340 } });
+  gsap.set([cortadoLiquid, cortadoMilk], { attr: { y: 350 } });
+  gsap.set([flatWhiteLiquid, flatWhiteMilk], { attr: { y: 345 } });
   gsap.set([cappuccinoCoffee, cappuccinoMilk], { attr: { y: 345 } });
   gsap.set([latteCoffee, latteMilk], { attr: { y: 350 } });
 
-  // 2. Initial text cards state
+  // 3. Initial text cards state
   textCards.forEach((card, index) => {
     gsap.set(card, {
       autoAlpha: index === 0 ? 1 : 0,
