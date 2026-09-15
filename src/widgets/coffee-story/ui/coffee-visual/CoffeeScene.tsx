@@ -312,7 +312,6 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           </CoffeeCup>
         </g>
       </g>
-
       {/* Latte Scene */}
       <g ref={latteRef}>
         <path
@@ -324,7 +323,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
         />
 
         <g ref={latteGlassRef}>
-          <CoffeeGlass>
+          <CoffeeGlass variant="tall">
             <rect
               ref={latteCoffeeRef}
               x="140"
