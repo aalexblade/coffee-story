@@ -1,47 +1,45 @@
-import { useId } from 'react';
-import type { ReactNode } from 'react';
+import React, { useId } from 'react';
 
 interface CoffeeCupProps {
   id?: string;
   className?: string;
-  children?: ReactNode;
   handle?: boolean;
+  children?: React.ReactNode;
 }
 
-const CUP_PATH =
-  'M112 215 H288 C284 305 265 345 200 345 C135 345 116 305 112 215 Z';
-
-const HANDLE_PATH = 'M280 230 C310 230 314 275 280 282';
-
-export function CoffeeCup({
+export const CoffeeCup: React.FC<CoffeeCupProps> = ({
   id,
   className,
-  children,
   handle = true,
-}: CoffeeCupProps) {
-  const clipId = `coffee-cup-clip-${useId().replace(/:/g, '')}`;
+  children,
+}) => {
+  const clipId = useId();
 
   return (
     <g id={id} className={className}>
       <defs>
         <clipPath id={clipId}>
-          <path d={CUP_PATH} />
+          <path d="M 120 220 C 120 340, 150 350, 200 350 C 250 350, 280 340, 280 220 Z" />
         </clipPath>
       </defs>
 
-      <path d={CUP_PATH} fill="#F4E8D8" />
+      <g clipPath={`url(#${clipId})`}>{children}</g>
+
+      <path
+        d="M 120 220 C 120 340, 150 350, 200 350 C 250 350, 280 340, 280 220 Z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="6"
+      />
 
       {handle && (
         <path
-          d={HANDLE_PATH}
-          stroke="#F4E8D8"
-          strokeWidth="12"
-          strokeLinecap="round"
+          d="M 280 240 C 310 240, 310 300, 280 300"
           fill="none"
+          stroke="currentColor"
+          strokeWidth="6"
         />
       )}
-
-      <g clipPath={`url(#${clipId})`}>{children}</g>
     </g>
   );
-}
+};
