@@ -176,14 +176,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             rx="16"
             fill="#3C2A21"
           />
-          <rect
-            x="155"
-            y="145"
-            width="90"
-            height="120"
-            rx="8"
-            fill="#D5CEA3"
-          />
+          <rect x="155" y="145" width="90" height="120" rx="8" fill="#D5CEA3" />
           <circle cx="200" cy="185" r="18" fill="#1A120B" />
         </g>
         <g ref={beansRef}>
@@ -212,13 +205,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               fill="#3C2A21"
             />
             <g ref={espressoCremaRef}>
-              <ellipse
-                cx="200"
-                cy="255"
-                rx="76"
-                ry="12"
-                fill="#C68B59"
-              />
+              <ellipse cx="200" cy="255" rx="76" ry="12" fill="#C68B59" />
             </g>
           </CoffeeCup>
         </g>
@@ -283,13 +270,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               fill="#E8E0D7"
             />
             <g ref={flatWhiteCremaRef}>
-              <ellipse
-                cx="200"
-                cy="220"
-                rx="84"
-                ry="12"
-                fill="#D5CEA3"
-              />
+              <ellipse cx="200" cy="220" rx="84" ry="12" fill="#D5CEA3" />
             </g>
           </CoffeeCup>
         </g>
@@ -322,13 +303,13 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               height="60"
               fill="#E8E0D7"
             />
+            <g ref={cappuccinoFoamRef}>
+              <path
+                d="M112 215 C130 195 170 190 200 195 C230 190 270 195 288 215 Z"
+                fill="#FFF8F0"
+              />
+            </g>
           </CoffeeCup>
-        </g>
-        <g ref={cappuccinoFoamRef}>
-          <path
-            d="M112 215 C130 195 170 190 200 195 C230 190 270 195 288 215 Z"
-            fill="#FFF8F0"
-          />
         </g>
       </g>
 
@@ -342,62 +323,40 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           strokeLinecap="round"
         />
 
-        {/* Coffee Layer */}
-        <rect
-          ref={latteCoffeeRef}
-          x="140"
-          y="300"
-          width="120"
-          height="50"
-          fill="#5A3425"
-        />
-
-        {/* Milk Layer */}
-        <rect
-          ref={latteMilkRef}
-          x="140"
-          y="175"
-          width="120"
-          height="125"
-          fill="#DCC7AD"
-        />
-
-        {/* Tall Glass */}
         <g ref={latteGlassRef}>
-          <path
-            d="M140 165 H260 L250 350 Q200 365 150 350 Z"
-            fill="#E8E0D7"
-            fillOpacity="0.18"
-            stroke="#CFC4B8"
-            strokeWidth="3"
-          />
-          <ellipse
-            cx="200"
-            cy="165"
-            rx="60"
-            ry="10"
-            fill="#F4E8D8"
-            fillOpacity="0.45"
-          />
-        </g>
-
-        {/* Foam */}
-        <g ref={latteFoamRef}>
-          <ellipse cx="200" cy="164" rx="56" ry="8" fill="#F4E8D8" />
-        </g>
-
-        {/* Latte Art */}
-        <g ref={latteArtRef}>
-          <path
-            d="M200 160 C184 150 175 158 182 166 C188 173 200 180 200 180 C200 180 212 173 218 166 C225 158 216 150 200 160 Z"
-            fill="#C68B59"
-          />
-          <path
-            d="M200 180 C200 172 200 165 200 158"
-            stroke="#B77A50"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+          <CoffeeGlass>
+            <rect
+              ref={latteCoffeeRef}
+              x="140"
+              y="300"
+              width="120"
+              height="50"
+              fill="#5A3425"
+            />
+            <rect
+              ref={latteMilkRef}
+              x="140"
+              y="175"
+              width="120"
+              height="125"
+              fill="#DCC7AD"
+            />
+            <g ref={latteFoamRef}>
+              <ellipse cx="200" cy="164" rx="56" ry="8" fill="#F4E8D8" />
+            </g>
+            <g ref={latteArtRef}>
+              <path
+                d="M200 160 C184 150 175 158 182 166 C188 173 200 180 200 180 C200 180 212 173 218 166 C225 158 216 150 200 160 Z"
+                fill="#C68B59"
+              />
+              <path
+                d="M200 180 C200 172 200 165 200 158"
+                stroke="#B77A50"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </g>
+          </CoffeeGlass>
         </g>
       </g>
     </svg>
