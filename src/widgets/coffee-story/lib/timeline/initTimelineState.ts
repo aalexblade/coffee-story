@@ -39,7 +39,7 @@ export function initTimelineState({
     latteArt,
   } = visual;
 
-  // 1. Initial visual states for main elements & groups
+  // Main visual elements
   gsap.set(
     [
       espressoCup,
@@ -56,10 +56,10 @@ export function initTimelineState({
     {
       autoAlpha: 0,
       scale: 0.92,
-      transformOrigin: 'center center',
     },
   );
 
+  // Coffee streams
   gsap.set(
     [
       espressoStream,
@@ -71,18 +71,31 @@ export function initTimelineState({
     {
       autoAlpha: 0,
       scaleY: 0,
-      transformOrigin: 'top center',
     },
   );
 
-  // 2. Liquids initial attributes (only for <rect> elements)
-  gsap.set(espressoLiquid, { attr: { y: 340 } });
-  gsap.set([cortadoLiquid, cortadoMilk], { attr: { y: 350 } });
-  gsap.set([flatWhiteLiquid, flatWhiteMilk], { attr: { y: 345 } });
-  gsap.set([cappuccinoCoffee, cappuccinoMilk], { attr: { y: 345 } });
-  gsap.set([latteCoffee, latteMilk], { attr: { y: 350 } });
+  // Liquid levels
+  gsap.set(espressoLiquid, {
+    attr: { y: 340 },
+  });
 
-  // 3. Initial text cards state
+  gsap.set([cortadoLiquid, cortadoMilk], {
+    attr: { y: 350 },
+  });
+
+  gsap.set([flatWhiteLiquid, flatWhiteMilk], {
+    attr: { y: 345 },
+  });
+
+  gsap.set([cappuccinoCoffee, cappuccinoMilk], {
+    attr: { y: 345 },
+  });
+
+  gsap.set([latteCoffee, latteMilk], {
+    attr: { y: 350 },
+  });
+
+  // Text cards
   textCards.forEach((card, index) => {
     gsap.set(card, {
       autoAlpha: index === 0 ? 1 : 0,
