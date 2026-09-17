@@ -20,81 +20,157 @@ export function animateEspressoToCortado(
     cortadoMilk,
   } = visual;
 
-  // Espresso → out
+  /*
+   * 1. Hold espresso
+   */
   tl.to(
-    espressoCup,
+    {},
     {
-      autoAlpha: 0,
-      scale: 0.94,
-      y: -10,
-      duration: STEP_DURATION,
-      ease: 'power2.inOut',
+      duration: HOLD_DURATION,
     },
-    `+=${HOLD_DURATION}`,
   );
 
+  /*
+   * 2. Espresso exits
+   *
+   * Slight upward movement + scale down.
+   * The crema disappears slightly earlier than the cup.
+   */
   tl.to(
     espressoCrema,
     {
       autoAlpha: 0,
-      duration: 0.5,
-      ease: 'power2.inOut',
+      scaleX: 0.92,
+      duration: 0.35,
+      ease: 'power2.in',
     },
-    '<',
   );
 
-  // Cortado glass → in
+  tl.to(
+    espressoCup,
+    {
+      autoAlpha: 0,
+      y: -14,
+      scale: 0.94,
+      duration: STEP_DURATION,
+      ease: 'power2.inOut',
+    },
+    '<0.05',
+  );
+
+  /*
+   * 3. Cortado glass enters
+   */
   tl.to(
     cortadoGlass,
     {
       autoAlpha: 1,
-      scale: 1,
       y: 0,
+      scale: 1,
       duration: STEP_DURATION,
       ease: 'power3.out',
     },
-    '<0.25',
+    '<0.2',
   );
 
-  // Milk starts flowing
-  tl.to(cortadoStream, {
-    autoAlpha: 1,
-    scaleY: 1,
-    duration: 0.35,
-    ease: 'power2.out',
-  });
-
-  // Coffee base rises to 50% level
-  tl.to(
+  /*
+   * 4. Coffee starts filling
+   *
+   * The rect itself stays in place.
+   * Its visible portion is controlled by clip-path.
+   *
+   * We reveal the coffee from bottom to top using scaleY.
+   */
+  tl.fromTo(
     cortadoLiquid,
     {
-      attr: {
-        y: 285,
-      },
-      duration: 0.6,
+      scaleY: 0.05,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
+      duration: 0.65,
       ease: 'power2.out',
     },
-    '<',
+    '<0.15',
   );
 
-  // Milk rises above coffee layer to 100% level
-  tl.to(cortadoMilk, {
-    attr: {
-      y: 220,
+  /*
+   * 5. Milk stream appears
+   */
+  tl.fromTo(
+    cortadoStream,
+    {
+      autoAlpha: 0,
+      scaleY: 0,
+      transformOrigin: 'center top',
     },
-    duration: 0.8,
-    ease: 'power2.out',
-  });
+    {
+      autoAlpha: 1,
+      scaleY: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+    },
+    '<0.18',
+  );
 
-  // Stop pouring
-  tl.to(cortadoStream, {
-    autoAlpha: 0,
-    scaleY: 0,
-    duration: 0.3,
-    ease: 'power2.in',
-  });
+  /*
+   * 6. Milk fills the upper layer
+   */
+  tl.fromTo(
+    cortadoMilk,
+    {
+      scaleY: 0.05,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
+      duration: 0.8,
+      ease: 'power2.out',
+    },
+    '<0.05',
+  );
 
-  // Text: Espresso → Cortado
+  /*
+   * 7. Small settling movement
+   *
+   * Gives the liquid a subtle "settle" instead of stopping abruptly.
+   */
+  tl.to(
+    cortadoMilk,
+    {
+      scaleY: 1.015,
+      duration: 0.12,
+      ease: 'power1.out',
+    },
+  );
+
+  tl.to(
+    cortadoMilk,
+    {
+      scaleY: 1,
+      duration: 0.18,
+      ease: 'power2.out',
+    },
+  );
+
+  /*
+   * 8. Stop pouring
+   */
+  tl.to(
+    cortadoStream,
+    {
+      autoAlpha: 0,
+      scaleY: 0,
+      duration: 0.3,
+      ease: 'power2.in',
+    },
+    '<0.02',
+  );
+
+  /*
+   * 9. Text transition
+   */
   if (textCards[1]) {
     tl.to(
       textCards[1],
