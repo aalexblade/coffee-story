@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import type { ReactNode } from 'react';
 import '@/shared/styles/globals.css';
 
 const geistSans = Geist({
@@ -14,14 +13,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Coffee Story — Interactive Experience',
-  description: 'GSAP Scrollytelling Experience',
+  title: 'Coffee Story',
+  description: 'Interactive scrollytelling experience about coffee brewing',
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html
-      lang="en"
+      lang="uk"
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
