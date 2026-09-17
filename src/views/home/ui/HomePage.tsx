@@ -1,15 +1,17 @@
 import { CoffeeStory } from '@/widgets/coffee-story';
 import { Header } from '@/widgets/header';
 import { Hero } from '@/widgets/hero';
+import styles from './HomePage.module.css';
 
 export function HomePage() {
   return (
-    <main className="flex-1">
+    <main className={styles.main}>
       <Header />
       <Hero />
       <CoffeeStory />
-      {/* Інші секції будуть нижче */}
-      <div style={{ height: '100vh', backgroundColor: '#1a100c' }} />
+
+      {/* Тимчасова секція для тестування scroll */}
+      <div className={styles.placeholder} />
     </main>
   );
 }
