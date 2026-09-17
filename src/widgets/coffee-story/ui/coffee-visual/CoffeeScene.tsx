@@ -9,151 +9,112 @@ import { CoffeeGlass } from './primitives/CoffeeGlass';
 export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
   const rootRef = useRef<SVGSVGElement>(null);
 
-  // Hero refs
-  const heroRef = useRef<SVGGElement>(null);
-  const packageRef = useRef<SVGGElement>(null);
-  const beansRef = useRef<SVGGElement>(null);
+  useImperativeHandle(ref, () => {
+    const getEl = <T extends SVGElement>(selector: string) =>
+      rootRef.current?.querySelector<T>(`[data-ref="${selector}"]`) ?? null;
 
-  // Espresso refs
-  const espressoRef = useRef<SVGGElement>(null);
-  const espressoCupRef = useRef<SVGGElement>(null);
-  const espressoLiquidRef = useRef<SVGRectElement>(null);
-  const espressoCremaRef = useRef<SVGGElement>(null);
-  const espressoStreamRef = useRef<SVGPathElement>(null);
-
-  // Cortado refs
-  const cortadoRef = useRef<SVGGElement>(null);
-  const cortadoGlassRef = useRef<SVGGElement>(null);
-  const cortadoLiquidRef = useRef<SVGRectElement>(null);
-  const cortadoMilkRef = useRef<SVGRectElement>(null);
-  const cortadoStreamRef = useRef<SVGPathElement>(null);
-
-  // Flat White refs
-  const flatWhiteRef = useRef<SVGGElement>(null);
-  const flatWhiteCupRef = useRef<SVGGElement>(null);
-  const flatWhiteLiquidRef = useRef<SVGRectElement>(null);
-  const flatWhiteMilkRef = useRef<SVGRectElement>(null);
-  const flatWhiteCremaRef = useRef<SVGGElement>(null);
-  const flatWhiteStreamRef = useRef<SVGPathElement>(null);
-
-  // Cappuccino refs
-  const cappuccinoRef = useRef<SVGGElement>(null);
-  const cappuccinoCupRef = useRef<SVGGElement>(null);
-  const cappuccinoCoffeeRef = useRef<SVGRectElement>(null);
-  const cappuccinoMilkRef = useRef<SVGRectElement>(null);
-  const cappuccinoFoamRef = useRef<SVGGElement>(null);
-  const cappuccinoStreamRef = useRef<SVGPathElement>(null);
-
-  // Latte refs
-  const latteRef = useRef<SVGGElement>(null);
-  const latteGlassRef = useRef<SVGGElement>(null);
-  const latteCoffeeRef = useRef<SVGRectElement>(null);
-  const latteMilkRef = useRef<SVGRectElement>(null);
-  const latteFoamRef = useRef<SVGGElement>(null);
-  const latteStreamRef = useRef<SVGPathElement>(null);
-  const latteArtRef = useRef<SVGGElement>(null);
-
-  useImperativeHandle(ref, () => ({
-    get root() {
-      return rootRef.current;
-    },
-    get hero() {
-      return heroRef.current;
-    },
-    get package() {
-      return packageRef.current;
-    },
-    get beans() {
-      return beansRef.current;
-    },
-    get espresso() {
-      return espressoRef.current;
-    },
-    get espressoCup() {
-      return espressoCupRef.current;
-    },
-    get espressoLiquid() {
-      return espressoLiquidRef.current;
-    },
-    get espressoCrema() {
-      return espressoCremaRef.current;
-    },
-    get espressoStream() {
-      return espressoStreamRef.current;
-    },
-    get cortado() {
-      return cortadoRef.current;
-    },
-    get cortadoGlass() {
-      return cortadoGlassRef.current;
-    },
-    get cortadoLiquid() {
-      return cortadoLiquidRef.current;
-    },
-    get cortadoMilk() {
-      return cortadoMilkRef.current;
-    },
-    get cortadoStream() {
-      return cortadoStreamRef.current;
-    },
-    get flatWhite() {
-      return flatWhiteRef.current;
-    },
-    get flatWhiteCup() {
-      return flatWhiteCupRef.current;
-    },
-    get flatWhiteLiquid() {
-      return flatWhiteLiquidRef.current;
-    },
-    get flatWhiteMilk() {
-      return flatWhiteMilkRef.current;
-    },
-    get flatWhiteCrema() {
-      return flatWhiteCremaRef.current;
-    },
-    get flatWhiteStream() {
-      return flatWhiteStreamRef.current;
-    },
-    get cappuccino() {
-      return cappuccinoRef.current;
-    },
-    get cappuccinoCup() {
-      return cappuccinoCupRef.current;
-    },
-    get cappuccinoCoffee() {
-      return cappuccinoCoffeeRef.current;
-    },
-    get cappuccinoMilk() {
-      return cappuccinoMilkRef.current;
-    },
-    get cappuccinoFoam() {
-      return cappuccinoFoamRef.current;
-    },
-    get cappuccinoStream() {
-      return cappuccinoStreamRef.current;
-    },
-    get latte() {
-      return latteRef.current;
-    },
-    get latteGlass() {
-      return latteGlassRef.current;
-    },
-    get latteCoffee() {
-      return latteCoffeeRef.current;
-    },
-    get latteMilk() {
-      return latteMilkRef.current;
-    },
-    get latteFoam() {
-      return latteFoamRef.current;
-    },
-    get latteStream() {
-      return latteStreamRef.current;
-    },
-    get latteArt() {
-      return latteArtRef.current;
-    },
-  }));
+    return {
+      get root() {
+        return rootRef.current;
+      },
+      get hero() {
+        return getEl<SVGGElement>('hero');
+      },
+      get package() {
+        return getEl<SVGGElement>('package');
+      },
+      get beans() {
+        return getEl<SVGGElement>('beans');
+      },
+      get espresso() {
+        return getEl<SVGGElement>('espresso');
+      },
+      get espressoCup() {
+        return getEl<SVGGElement>('espressoCup');
+      },
+      get espressoLiquid() {
+        return getEl<SVGRectElement>('espressoLiquid');
+      },
+      get espressoCrema() {
+        return getEl<SVGGElement>('espressoCrema');
+      },
+      get espressoStream() {
+        return getEl<SVGPathElement>('espressoStream');
+      },
+      get cortado() {
+        return getEl<SVGGElement>('cortado');
+      },
+      get cortadoGlass() {
+        return getEl<SVGGElement>('cortadoGlass');
+      },
+      get cortadoLiquid() {
+        return getEl<SVGRectElement>('cortadoLiquid');
+      },
+      get cortadoMilk() {
+        return getEl<SVGRectElement>('cortadoMilk');
+      },
+      get cortadoStream() {
+        return getEl<SVGPathElement>('cortadoStream');
+      },
+      get flatWhite() {
+        return getEl<SVGGElement>('flatWhite');
+      },
+      get flatWhiteCup() {
+        return getEl<SVGGElement>('flatWhiteCup');
+      },
+      get flatWhiteLiquid() {
+        return getEl<SVGRectElement>('flatWhiteLiquid');
+      },
+      get flatWhiteMilk() {
+        return getEl<SVGRectElement>('flatWhiteMilk');
+      },
+      get flatWhiteCrema() {
+        return getEl<SVGGElement>('flatWhiteCrema');
+      },
+      get flatWhiteStream() {
+        return getEl<SVGPathElement>('flatWhiteStream');
+      },
+      get cappuccino() {
+        return getEl<SVGGElement>('cappuccino');
+      },
+      get cappuccinoCup() {
+        return getEl<SVGGElement>('cappuccinoCup');
+      },
+      get cappuccinoCoffee() {
+        return getEl<SVGRectElement>('cappuccinoCoffee');
+      },
+      get cappuccinoMilk() {
+        return getEl<SVGRectElement>('cappuccinoMilk');
+      },
+      get cappuccinoFoam() {
+        return getEl<SVGGElement>('cappuccinoFoam');
+      },
+      get cappuccinoStream() {
+        return getEl<SVGPathElement>('cappuccinoStream');
+      },
+      get latte() {
+        return getEl<SVGGElement>('latte');
+      },
+      get latteGlass() {
+        return getEl<SVGGElement>('latteGlass');
+      },
+      get latteCoffee() {
+        return getEl<SVGRectElement>('latteCoffee');
+      },
+      get latteMilk() {
+        return getEl<SVGRectElement>('latteMilk');
+      },
+      get latteFoam() {
+        return getEl<SVGGElement>('latteFoam');
+      },
+      get latteStream() {
+        return getEl<SVGPathElement>('latteStream');
+      },
+      get latteArt() {
+        return getEl<SVGGElement>('latteArt');
+      },
+    };
+  }, []);
 
   return (
     <svg
@@ -233,8 +194,8 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           HERO
       ========================= */}
 
-      <g ref={heroRef}>
-        <g ref={packageRef}>
+      <g data-ref="hero">
+        <g data-ref="package">
           <rect
             x="140"
             y="120"
@@ -261,7 +222,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           <circle cx="195" cy="180" r="5" fill="#FFFFFF" fillOpacity="0.08" />
         </g>
 
-        <g ref={beansRef}>
+        <g data-ref="beans">
           <ellipse cx="140" cy="310" rx="14" ry="9" fill="#1A120B" />
 
           <path
@@ -288,19 +249,19 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           ESPRESSO
       ========================= */}
 
-      <g ref={espressoRef}>
+      <g data-ref="espresso">
         <path
-          ref={espressoStreamRef}
+          data-ref="espressoStream"
           d="M200 70 L200 240"
           stroke="#4A2B20"
           strokeWidth="6"
           strokeLinecap="round"
         />
 
-        <g ref={espressoCupRef}>
+        <g data-ref="espressoCup">
           <CoffeeCup handle={true}>
             <rect
-              ref={espressoLiquidRef}
+              data-ref="espressoLiquid"
               x="120"
               y="255"
               width="160"
@@ -308,7 +269,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               fill="url(#coffeeGradient)"
             />
 
-            <g ref={espressoCremaRef}>
+            <g data-ref="espressoCrema">
               <ellipse
                 cx="200"
                 cy="255"
@@ -334,19 +295,19 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           CORTADO
       ========================= */}
 
-      <g ref={cortadoRef}>
+      <g data-ref="cortado">
         <path
-          ref={cortadoStreamRef}
+          data-ref="cortadoStream"
           d="M200 60 L200 220"
           stroke="#E8DCCF"
           strokeWidth="7"
           strokeLinecap="round"
         />
 
-        <g ref={cortadoGlassRef}>
+        <g data-ref="cortadoGlass">
           <CoffeeGlass>
             <rect
-              ref={cortadoLiquidRef}
+              data-ref="cortadoLiquid"
               x="130"
               y="285"
               width="140"
@@ -355,7 +316,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             />
 
             <rect
-              ref={cortadoMilkRef}
+              data-ref="cortadoMilk"
               x="130"
               y="225"
               width="140"
@@ -379,19 +340,19 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           FLAT WHITE
       ========================= */}
 
-      <g ref={flatWhiteRef}>
+      <g data-ref="flatWhite">
         <path
-          ref={flatWhiteStreamRef}
+          data-ref="flatWhiteStream"
           d="M200 60 L200 220"
           stroke="#F4E8D8"
           strokeWidth="8"
           strokeLinecap="round"
         />
 
-        <g ref={flatWhiteCupRef}>
+        <g data-ref="flatWhiteCup">
           <CoffeeCup handle={true}>
             <rect
-              ref={flatWhiteLiquidRef}
+              data-ref="flatWhiteLiquid"
               x="115"
               y="270"
               width="170"
@@ -400,7 +361,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             />
 
             <rect
-              ref={flatWhiteMilkRef}
+              data-ref="flatWhiteMilk"
               x="115"
               y="220"
               width="170"
@@ -408,7 +369,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               fill="url(#milkGradient)"
             />
 
-            <g ref={flatWhiteCremaRef}>
+            <g data-ref="flatWhiteCrema">
               <ellipse
                 cx="200"
                 cy="220"
@@ -434,19 +395,19 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           CAPPUCCINO
       ========================= */}
 
-      <g ref={cappuccinoRef}>
+      <g data-ref="cappuccino">
         <path
-          ref={cappuccinoStreamRef}
+          data-ref="cappuccinoStream"
           d="M200 55 L200 215"
           stroke="#F4E8D8"
           strokeWidth="9"
           strokeLinecap="round"
         />
 
-        <g ref={cappuccinoCupRef}>
+        <g data-ref="cappuccinoCup">
           <CoffeeCup handle={true}>
             <rect
-              ref={cappuccinoCoffeeRef}
+              data-ref="cappuccinoCoffee"
               x="115"
               y="280"
               width="170"
@@ -455,7 +416,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             />
 
             <rect
-              ref={cappuccinoMilkRef}
+              data-ref="cappuccinoMilk"
               x="115"
               y="220"
               width="170"
@@ -463,7 +424,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               fill="url(#milkGradient)"
             />
 
-            <g ref={cappuccinoFoamRef}>
+            <g data-ref="cappuccinoFoam">
               <path
                 d="M112 215 C130 195 170 190 200 195 C230 190 270 195 288 215 Z"
                 fill="url(#foamGradient)"
@@ -486,19 +447,19 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
           LATTE
       ========================= */}
 
-      <g ref={latteRef}>
+      <g data-ref="latte">
         <path
-          ref={latteStreamRef}
+          data-ref="latteStream"
           d="M200 55 L200 170"
           stroke="#DCC7AD"
           strokeWidth="9"
           strokeLinecap="round"
         />
 
-        <g ref={latteGlassRef}>
+        <g data-ref="latteGlass">
           <CoffeeGlass variant="tall">
             <rect
-              ref={latteCoffeeRef}
+              data-ref="latteCoffee"
               x="140"
               y="300"
               width="120"
@@ -507,7 +468,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             />
 
             <rect
-              ref={latteMilkRef}
+              data-ref="latteMilk"
               x="140"
               y="175"
               width="120"
@@ -515,7 +476,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               fill="url(#warmMilkGradient)"
             />
 
-            <g ref={latteFoamRef}>
+            <g data-ref="latteFoam">
               <ellipse
                 cx="200"
                 cy="164"
@@ -525,7 +486,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               />
             </g>
 
-            <g ref={latteArtRef}>
+            <g data-ref="latteArt">
               <path
                 d="M200 160 C184 150 175 158 182 166 C188 173 200 180 200 180 C200 180 212 173 218 166 C225 158 216 150 200 160 Z"
                 fill="#C68B59"
