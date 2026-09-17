@@ -39,7 +39,9 @@ export function initTimelineState({
     latteArt,
   } = visual;
 
-  // Main visual elements
+  /*
+   * Vessels + surfaces
+   */
   gsap.set(
     [
       espressoCup,
@@ -56,10 +58,13 @@ export function initTimelineState({
     {
       autoAlpha: 0,
       scale: 0.92,
+      transformOrigin: 'center center',
     },
   );
 
-  // Coffee streams
+  /*
+   * Coffee streams
+   */
   gsap.set(
     [
       espressoStream,
@@ -71,31 +76,36 @@ export function initTimelineState({
     {
       autoAlpha: 0,
       scaleY: 0,
+      transformOrigin: 'center top',
     },
   );
 
-  // Liquid levels
-  gsap.set(espressoLiquid, {
-    attr: { y: 340 },
-  });
+  /*
+   * Liquid layers
+   *
+   * All liquids reveal from bottom → top.
+   */
+  gsap.set(
+    [
+      espressoLiquid,
+      cortadoLiquid,
+      cortadoMilk,
+      flatWhiteLiquid,
+      flatWhiteMilk,
+      cappuccinoCoffee,
+      cappuccinoMilk,
+      latteCoffee,
+      latteMilk,
+    ],
+    {
+      scaleY: 0,
+      transformOrigin: 'center bottom',
+    },
+  );
 
-  gsap.set([cortadoLiquid, cortadoMilk], {
-    attr: { y: 350 },
-  });
-
-  gsap.set([flatWhiteLiquid, flatWhiteMilk], {
-    attr: { y: 345 },
-  });
-
-  gsap.set([cappuccinoCoffee, cappuccinoMilk], {
-    attr: { y: 345 },
-  });
-
-  gsap.set([latteCoffee, latteMilk], {
-    attr: { y: 350 },
-  });
-
-  // Text cards
+  /*
+   * Text cards
+   */
   textCards.forEach((card, index) => {
     gsap.set(card, {
       autoAlpha: index === 0 ? 1 : 0,
