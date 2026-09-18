@@ -65,12 +65,14 @@ export function animateCappuccinoToLatte(
     ease: 'power2.out',
   });
 
-  tl.to(
+  tl.fromTo(
     latteCoffee,
     {
-      attr: {
-        y: 300,
-      },
+      scaleY: 0,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
       duration: 0.55,
       ease: 'power2.out',
     },
@@ -78,12 +80,14 @@ export function animateCappuccinoToLatte(
   );
 
   // Milk
-  tl.to(
+  tl.fromTo(
     latteMilk,
     {
-      attr: {
-        y: 175,
-      },
+      scaleY: 0,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
       duration: 1,
       ease: 'power2.out',
     },
