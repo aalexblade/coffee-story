@@ -60,12 +60,14 @@ export function animateCortadoToFlatWhite(
     ease: 'power2.out',
   });
 
-  tl.to(
+  tl.fromTo(
     flatWhiteLiquid,
     {
-      attr: {
-        y: 290,
-      },
+      scaleY: 0,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
       duration: 0.7,
       ease: 'power2.out',
     },
@@ -75,12 +77,14 @@ export function animateCortadoToFlatWhite(
   /*
    * 4. Microfoam
    */
-  tl.to(
+  tl.fromTo(
     flatWhiteMilk,
     {
-      attr: {
-        y: 220,
-      },
+      scaleY: 0,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
       duration: 0.8,
       ease: 'power2.out',
     },
