@@ -36,15 +36,12 @@ export function animateEspressoToCortado(
    * Slight upward movement + scale down.
    * The crema disappears slightly earlier than the cup.
    */
-  tl.to(
-    espressoCrema,
-    {
-      autoAlpha: 0,
-      scaleX: 0.92,
-      duration: 0.35,
-      ease: 'power2.in',
-    },
-  );
+  tl.to(espressoCrema, {
+    autoAlpha: 0,
+    scaleX: 0.92,
+    duration: 0.35,
+    ease: 'power2.in',
+  });
 
   tl.to(
     espressoCup,
@@ -136,23 +133,17 @@ export function animateEspressoToCortado(
    *
    * Gives the liquid a subtle "settle" instead of stopping abruptly.
    */
-  tl.to(
-    cortadoMilk,
-    {
-      scaleY: 1.015,
-      duration: 0.12,
-      ease: 'power1.out',
-    },
-  );
+  tl.to(cortadoMilk, {
+    scaleY: 1.015,
+    duration: 0.12,
+    ease: 'power1.out',
+  });
 
-  tl.to(
-    cortadoMilk,
-    {
-      scaleY: 1,
-      duration: 0.18,
-      ease: 'power2.out',
-    },
-  );
+  tl.to(cortadoMilk, {
+    scaleY: 1,
+    duration: 0.18,
+    ease: 'power2.out',
+  });
 
   /*
    * 8. Stop pouring
