@@ -23,12 +23,9 @@ export function animateEspressoToCortado(
   /*
    * 1. Hold espresso
    */
-  tl.to(
-    {},
-    {
-      duration: HOLD_DURATION,
-    },
-  );
+  tl.to(espressoCup, {
+    duration: HOLD_DURATION,
+  });
 
   /*
    * 2. Espresso exits
@@ -131,7 +128,8 @@ export function animateEspressoToCortado(
   /*
    * 7. Small settling movement
    *
-   * Gives the liquid a subtle "settle" instead of stopping abruptly.
+   * Gives the liquid a subtle "settle"
+   * instead of stopping abruptly.
    */
   tl.to(cortadoMilk, {
     scaleY: 1.015,
