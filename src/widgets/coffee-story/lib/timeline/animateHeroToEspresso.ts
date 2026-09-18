@@ -1,6 +1,10 @@
 import { gsap } from '@/shared/lib/gsap';
 import type { CoffeeVisualHandle } from '../../ui/coffee-visual/coffeeScene.types';
-import { HOLD_DURATION, STEP_DURATION, TEXT_OFFSET } from './timeline.constants';
+import {
+  HOLD_DURATION,
+  STEP_DURATION,
+  TEXT_OFFSET,
+} from './timeline.constants';
 
 export function animateHeroToEspresso(
   tl: gsap.core.Timeline,
@@ -61,12 +65,14 @@ export function animateHeroToEspresso(
     ease: 'power2.out',
   });
 
-  tl.to(
+  tl.fromTo(
     espressoLiquid,
     {
-      attr: {
-        y: 220,
-      },
+      scaleY: 0,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
       duration: 0.8,
       ease: 'power2.out',
     },
