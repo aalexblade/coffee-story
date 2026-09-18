@@ -64,12 +64,14 @@ export function animateFlatWhiteToCappuccino(
     ease: 'power2.out',
   });
 
-  tl.to(
+  tl.fromTo(
     cappuccinoCoffee,
     {
-      attr: {
-        y: 285,
-      },
+      scaleY: 0,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
       duration: 0.65,
       ease: 'power2.out',
     },
@@ -77,12 +79,14 @@ export function animateFlatWhiteToCappuccino(
   );
 
   // 4. Milk
-  tl.to(
+  tl.fromTo(
     cappuccinoMilk,
     {
-      attr: {
-        y: 240,
-      },
+      scaleY: 0,
+      transformOrigin: 'center bottom',
+    },
+    {
+      scaleY: 1,
       duration: 0.65,
       ease: 'power2.out',
     },
