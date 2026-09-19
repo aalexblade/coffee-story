@@ -1,12 +1,26 @@
 'use client';
 
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useId, useImperativeHandle, useRef } from 'react';
 import styles from './CoffeeScene.module.css';
 import type { CoffeeVisualHandle } from './coffeeScene.types';
 import { CoffeeCup } from './primitives/CoffeeCup';
 import { CoffeeGlass } from './primitives/CoffeeGlass';
 
 export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
+  const rawId = useId();
+  const prefix = rawId.replace(/:/g, '');
+
+  const ids = {
+    coffeeGradient: `coffeeGradient_${prefix}`,
+    milkGradient: `milkGradient_${prefix}`,
+    warmMilkGradient: `warmMilkGradient_${prefix}`,
+    cremaGradient: `cremaGradient_${prefix}`,
+    foamGradient: `foamGradient_${prefix}`,
+    glassHighlight: `glassHighlight_${prefix}`,
+    softShadow: `softShadow_${prefix}`,
+    packageGradient: `packageGradient_${prefix}`,
+  };
+
   const rootRef = useRef<SVGSVGElement>(null);
 
   useImperativeHandle(ref, () => {
@@ -125,39 +139,39 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
     >
       <defs>
         {/* Coffee */}
-        <linearGradient id="coffeeGradient" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={ids.coffeeGradient} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#70442F" />
           <stop offset="45%" stopColor="#4A2B20" />
           <stop offset="100%" stopColor="#24130D" />
         </linearGradient>
 
         {/* Milk */}
-        <linearGradient id="milkGradient" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={ids.milkGradient} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#FFF9F2" />
           <stop offset="100%" stopColor="#E4D5C4" />
         </linearGradient>
 
         {/* Warm latte milk */}
-        <linearGradient id="warmMilkGradient" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={ids.warmMilkGradient} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#F5E7D4" />
           <stop offset="100%" stopColor="#D7BFA4" />
         </linearGradient>
 
         {/* Crema */}
-        <radialGradient id="cremaGradient">
+        <radialGradient id={ids.cremaGradient}>
           <stop offset="0%" stopColor="#E5AF79" />
           <stop offset="65%" stopColor="#C98C5A" />
           <stop offset="100%" stopColor="#9A603D" />
         </radialGradient>
 
         {/* Cappuccino foam */}
-        <linearGradient id="foamGradient" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={ids.foamGradient} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#FFFDF9" />
           <stop offset="100%" stopColor="#EADBCB" />
         </linearGradient>
 
         {/* Glass highlight */}
-        <linearGradient id="glassHighlight" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={ids.glassHighlight} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
           <stop offset="42%" stopColor="#FFFFFF" stopOpacity="0.05" />
           <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.48" />
@@ -166,12 +180,18 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
         </linearGradient>
 
         {/* Soft shadow */}
-        <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <filter
+          id={ids.softShadow}
+          x="-50%"
+          y="-50%"
+          width="200%"
+          height="200%"
+        >
           <feGaussianBlur stdDeviation="7" />
         </filter>
 
         {/* Package highlight */}
-        <linearGradient id="packageGradient" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={ids.packageGradient} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#4A3329" />
           <stop offset="55%" stopColor="#3C2A21" />
           <stop offset="100%" stopColor="#241712" />
@@ -187,7 +207,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
         r="95"
         fill="#3C2A21"
         fillOpacity="0.08"
-        filter="url(#softShadow)"
+        filter={`url(#${ids.softShadow})`}
       />
 
       {/* =========================
@@ -202,7 +222,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
             width="120"
             height="170"
             rx="16"
-            fill="url(#packageGradient)"
+            fill={`url(#${ids.packageGradient})`}
           />
 
           <rect x="155" y="145" width="90" height="120" rx="8" fill="#D5CEA3" />
@@ -266,7 +286,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="255"
               width="160"
               height="80"
-              fill="url(#coffeeGradient)"
+              fill={`url(#${ids.coffeeGradient})`}
             />
 
             <g data-ref="espressoCrema">
@@ -275,7 +295,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
                 cy="255"
                 rx="76"
                 ry="12"
-                fill="url(#cremaGradient)"
+                fill={`url(#${ids.cremaGradient})`}
               />
 
               <ellipse
@@ -312,7 +332,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="285"
               width="140"
               height="60"
-              fill="url(#coffeeGradient)"
+              fill={`url(#${ids.coffeeGradient})`}
             />
 
             <rect
@@ -321,7 +341,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="225"
               width="140"
               height="60"
-              fill="url(#milkGradient)"
+              fill={`url(#${ids.milkGradient})`}
             />
 
             <rect
@@ -329,7 +349,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="225"
               width="140"
               height="120"
-              fill="url(#glassHighlight)"
+              fill={`url(#${ids.glassHighlight})`}
               opacity="0.32"
             />
           </CoffeeGlass>
@@ -357,7 +377,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="270"
               width="170"
               height="70"
-              fill="url(#coffeeGradient)"
+              fill={`url(#${ids.coffeeGradient})`}
             />
 
             <rect
@@ -366,7 +386,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="220"
               width="170"
               height="50"
-              fill="url(#milkGradient)"
+              fill={`url(#${ids.milkGradient})`}
             />
 
             <g data-ref="flatWhiteCrema">
@@ -375,7 +395,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
                 cy="220"
                 rx="84"
                 ry="12"
-                fill="url(#cremaGradient)"
+                fill={`url(#${ids.cremaGradient})`}
               />
 
               <ellipse
@@ -412,7 +432,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="280"
               width="170"
               height="60"
-              fill="url(#coffeeGradient)"
+              fill={`url(#${ids.coffeeGradient})`}
             />
 
             <rect
@@ -421,13 +441,13 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="220"
               width="170"
               height="60"
-              fill="url(#milkGradient)"
+              fill={`url(#${ids.milkGradient})`}
             />
 
             <g data-ref="cappuccinoFoam">
               <path
                 d="M112 215 C130 195 170 190 200 195 C230 190 270 195 288 215 Z"
-                fill="url(#foamGradient)"
+                fill={`url(#${ids.foamGradient})`}
               />
 
               <ellipse
@@ -464,7 +484,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="300"
               width="120"
               height="50"
-              fill="url(#coffeeGradient)"
+              fill={`url(#${ids.coffeeGradient})`}
             />
 
             <rect
@@ -473,7 +493,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="175"
               width="120"
               height="125"
-              fill="url(#warmMilkGradient)"
+              fill={`url(#${ids.warmMilkGradient})`}
             />
 
             <g data-ref="latteFoam">
@@ -482,7 +502,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
                 cy="164"
                 rx="56"
                 ry="8"
-                fill="url(#foamGradient)"
+                fill={`url(#${ids.foamGradient})`}
               />
             </g>
 
@@ -523,7 +543,7 @@ export const CoffeeScene = forwardRef<CoffeeVisualHandle>((_, ref) => {
               y="165"
               width="120"
               height="185"
-              fill="url(#glassHighlight)"
+              fill={`url(#${ids.glassHighlight})`}
               opacity="0.28"
             />
           </CoffeeGlass>
