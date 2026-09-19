@@ -22,29 +22,43 @@ export function animateCappuccinoToLatte(
     latteArt,
   } = visual;
 
-  // Cappuccino exits
-  tl.to(
-    cappuccinoCup,
-    {
-      autoAlpha: 0,
-      scale: 0.94,
-      y: -10,
-      duration: STEP_DURATION,
-      ease: 'power2.inOut',
-    },
-    `+=${HOLD_DURATION}`,
-  );
+  /*
+   * 1. Hold Cappuccino
+   */
+  tl.to(cappuccinoCup, {
+    duration: HOLD_DURATION,
+  });
 
+  /*
+   * 2. Cappuccino exits
+   */
+  tl.to(cappuccinoCup, {
+    autoAlpha: 0,
+    scale: 0.94,
+    y: -10,
+    duration: STEP_DURATION,
+    ease: 'power2.inOut',
+  });
+
+  /*
+   * 3. Foam fades slightly before the cup disappears
+   */
   tl.to(
     cappuccinoFoam,
     {
       autoAlpha: 0,
-      duration: 0.4,
+      scale: 0.94,
+      duration: 0.32,
+      ease: 'power2.in',
     },
-    '<',
+    '<0.04',
   );
 
-  // Latte glass enters
+  /*
+   * 4. Latte glass enters
+   *
+   * Taller vessel with a softer upward reveal.
+   */
   tl.to(
     latteGlass,
     {
@@ -54,84 +68,179 @@ export function animateCappuccinoToLatte(
       duration: STEP_DURATION,
       ease: 'power3.out',
     },
-    '<0.15',
+    '<0.2',
   );
 
-  // Coffee
-  tl.to(latteStream, {
-    autoAlpha: 1,
-    scaleY: 1,
-    duration: 0.35,
-    ease: 'power2.out',
-  });
-
+  /*
+   * 5. Espresso enters the bottom of the glass
+   */
   tl.fromTo(
     latteCoffee,
     {
-      scaleY: 0,
+      scaleY: 0.02,
+      scaleX: 0.985,
       transformOrigin: 'center bottom',
     },
     {
       scaleY: 1,
-      duration: 0.55,
+      scaleX: 1,
+      duration: 0.58,
       ease: 'power2.out',
     },
-    '<',
+    '<0.12',
   );
 
-  // Milk
+  /*
+   * 6. Coffee surface settles
+   */
+  tl.to(latteCoffee, {
+    scaleX: 1.012,
+    duration: 0.1,
+    ease: 'power1.out',
+  });
+
+  tl.to(latteCoffee, {
+    scaleX: 1,
+    duration: 0.16,
+    ease: 'power2.out',
+  });
+
+  /*
+   * 7. Milk stream appears
+   */
+  tl.fromTo(
+    latteStream,
+    {
+      autoAlpha: 0,
+      scaleY: 0,
+      scaleX: 0.92,
+      transformOrigin: 'center top',
+    },
+    {
+      autoAlpha: 1,
+      scaleY: 1,
+      scaleX: 1,
+      duration: 0.28,
+      ease: 'power2.out',
+    },
+    '<0.02',
+  );
+
+  /*
+   * 8. Milk slowly fills the tall latte glass
+   *
+   * Slower than previous drinks to emphasize
+   * the larger milk volume of a latte.
+   */
   tl.fromTo(
     latteMilk,
     {
-      scaleY: 0,
+      scaleY: 0.02,
+      scaleX: 0.985,
       transformOrigin: 'center bottom',
     },
     {
       scaleY: 1,
+      scaleX: 1,
       duration: 1,
       ease: 'power2.out',
     },
-    '<0.1',
+    '<0.04',
   );
 
-  // Finish pouring
-  tl.to(latteStream, {
-    autoAlpha: 0,
-    scaleY: 0,
-    duration: 0.3,
-    ease: 'power2.in',
+  /*
+   * 9. Milk surface settles
+   */
+  tl.to(latteMilk, {
+    scaleX: 1.012,
+    scaleY: 1.006,
+    duration: 0.1,
+    ease: 'power1.out',
   });
 
-  // Foam
-  tl.to(
-    latteFoam,
-    {
-      autoAlpha: 1,
-      scale: 1,
-      duration: 0.45,
-      ease: 'power2.out',
-    },
-    '<',
-  );
+  tl.to(latteMilk, {
+    scaleX: 1,
+    scaleY: 1,
+    duration: 0.2,
+    ease: 'power2.out',
+  });
 
-  // Latte art
-  tl.fromTo(
-    latteArt,
+  /*
+   * 10. Stop pouring
+   */
+  tl.to(
+    latteStream,
     {
       autoAlpha: 0,
-      scale: 0.6,
+      scaleY: 0.15,
+      scaleX: 0.94,
+      duration: 0.22,
+      ease: 'power2.in',
+    },
+    '<0.03',
+  );
+
+  /*
+   * 11. Thin latte foam appears
+   *
+   * Latte foam should be much subtler than cappuccino foam.
+   */
+  tl.fromTo(
+    latteFoam,
+    {
+      autoAlpha: 0,
+      scale: 0.96,
       transformOrigin: 'center center',
     },
     {
       autoAlpha: 1,
       scale: 1,
-      duration: 0.7,
-      ease: 'back.out(1.5)',
+      duration: 0.42,
+      ease: 'power2.out',
     },
-    '<0.15',
+    '<0.04',
   );
 
-  // Text transition (Step 5 -> Step 6)
+  /*
+   * 12. Foam settles
+   */
+  tl.to(latteFoam, {
+    scale: 1.008,
+    duration: 0.1,
+    ease: 'power1.out',
+  });
+
+  tl.to(latteFoam, {
+    scale: 1,
+    duration: 0.16,
+    ease: 'power2.out',
+  });
+
+  /*
+   * 13. Latte art appears last
+   *
+   * Small scale-up instead of a strong bounce.
+   * Keeps the final drink premium and calm.
+   */
+  tl.fromTo(
+    latteArt,
+    {
+      autoAlpha: 0,
+      scale: 0.94,
+      transformOrigin: 'center center',
+    },
+    {
+      autoAlpha: 1,
+      scale: 1,
+      duration: 0.65,
+      ease: 'power2.out',
+    },
+    '<0.08',
+  );
+
+  /*
+   * 14. Text transition
+   */
   if (textCards[4]) {
     tl.to(
       textCards[4],
