@@ -21,29 +21,42 @@ export function animateFlatWhiteToCappuccino(
     cappuccinoStream,
   } = visual;
 
-  // 1. Finish Flat White
-  tl.to(
-    flatWhiteCup,
-    {
-      autoAlpha: 0,
-      scale: 0.94,
-      y: -10,
-      duration: STEP_DURATION,
-      ease: 'power2.inOut',
-    },
-    `+=${HOLD_DURATION}`,
-  );
+  /*
+   * 1. Hold Flat White
+   */
+  tl.to(flatWhiteCup, {
+    duration: HOLD_DURATION,
+  });
 
+  /*
+   * 2. Flat White exits
+   */
+  tl.to(flatWhiteCup, {
+    autoAlpha: 0,
+    scale: 0.94,
+    y: -10,
+    duration: STEP_DURATION,
+    ease: 'power2.inOut',
+  });
+
+  /*
+   * 3. Crema fades slightly before the cup disappears
+   */
   tl.to(
     flatWhiteCrema,
     {
       autoAlpha: 0,
-      duration: 0.35,
+      scaleX: 0.94,
+      scaleY: 0.94,
+      duration: 0.3,
+      ease: 'power2.in',
     },
-    '<',
+    '<0.05',
   );
 
-  // 2. Cappuccino cup enters
+  /*
+   * 4. Cappuccino cup enters
+   */
   tl.to(
     cappuccinoCup,
     {
@@ -56,64 +69,152 @@ export function animateFlatWhiteToCappuccino(
     '<0.2',
   );
 
-  // 3. Espresso
-  tl.to(cappuccinoStream, {
-    autoAlpha: 1,
-    scaleY: 1,
-    duration: 0.35,
-    ease: 'power2.out',
-  });
-
+  /*
+   * 5. Espresso extraction
+   */
   tl.fromTo(
     cappuccinoCoffee,
     {
-      scaleY: 0,
+      scaleY: 0.02,
+      scaleX: 0.985,
       transformOrigin: 'center bottom',
     },
     {
       scaleY: 1,
-      duration: 0.65,
+      scaleX: 1,
+      duration: 0.58,
       ease: 'power2.out',
     },
-    '<',
+    '<0.12',
   );
 
-  // 4. Milk
+  /*
+   * 6. Coffee surface settles
+   */
+  tl.to(cappuccinoCoffee, {
+    scaleX: 1.012,
+    duration: 0.1,
+    ease: 'power1.out',
+  });
+
+  tl.to(cappuccinoCoffee, {
+    scaleX: 1,
+    duration: 0.16,
+    ease: 'power2.out',
+  });
+
+  /*
+   * 7. Milk stream appears
+   */
+  tl.fromTo(
+    cappuccinoStream,
+    {
+      autoAlpha: 0,
+      scaleY: 0,
+      scaleX: 0.92,
+      transformOrigin: 'center top',
+    },
+    {
+      autoAlpha: 1,
+      scaleY: 1,
+      scaleX: 1,
+      duration: 0.28,
+      ease: 'power2.out',
+    },
+    '<0.02',
+  );
+
+  /*
+   * 8. Milk layer develops
+   */
   tl.fromTo(
     cappuccinoMilk,
     {
-      scaleY: 0,
+      scaleY: 0.02,
+      scaleX: 0.985,
       transformOrigin: 'center bottom',
     },
     {
       scaleY: 1,
-      duration: 0.65,
+      scaleX: 1,
+      duration: 0.62,
       ease: 'power2.out',
     },
-    '<0.1',
+    '<0.04',
   );
 
-  // 5. Stop stream
-  tl.to(cappuccinoStream, {
-    autoAlpha: 0,
-    scaleY: 0,
-    duration: 0.3,
-    ease: 'power2.in',
+  /*
+   * 9. Milk surface settles
+   */
+  tl.to(cappuccinoMilk, {
+    scaleX: 1.015,
+    scaleY: 1.008,
+    duration: 0.1,
+    ease: 'power1.out',
   });
 
-  // 6. Thick foam
+  tl.to(cappuccinoMilk, {
+    scaleX: 1,
+    scaleY: 1,
+    duration: 0.18,
+    ease: 'power2.out',
+  });
+
+  /*
+   * 10. Stop pouring
+   */
   tl.to(
+    cappuccinoStream,
+    {
+      autoAlpha: 0,
+      scaleY: 0.15,
+      scaleX: 0.94,
+      duration: 0.22,
+      ease: 'power2.in',
+    },
+    '<0.03',
+  );
+
+  /*
+   * 11. Thick foam appears
+   *
+   * Cappuccino should feel softer and more volumetric
+   * than the previous drinks.
+   */
+  tl.fromTo(
     cappuccinoFoam,
+    {
+      autoAlpha: 0,
+      scale: 0.94,
+      transformOrigin: 'center bottom',
+    },
     {
       autoAlpha: 1,
       scale: 1,
-      duration: 0.65,
-      ease: 'back.out(1.4)',
+      duration: 0.55,
+      ease: 'back.out(1.2)',
     },
-    '<0.05',
+    '<0.04',
   );
 
-  // 7. Text transition
+  /*
+   * 12. Foam settles
+   */
+  tl.to(cappuccinoFoam, {
+    scale: 1.015,
+    duration: 0.1,
+    ease: 'power1.out',
+  });
+
+  tl.to(cappuccinoFoam, {
+    scale: 1,
+    duration: 0.18,
+    ease: 'power2.out',
+  });
+
+  /*
+   * 13. Text transition
+   */
   if (textCards[3]) {
     tl.to(
       textCards[3],
