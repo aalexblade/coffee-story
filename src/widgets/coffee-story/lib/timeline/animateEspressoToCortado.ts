@@ -29,9 +29,6 @@ export function animateEspressoToCortado(
 
   /*
    * 2. Espresso exits
-   *
-   * Slight upward movement + scale down.
-   * The crema disappears slightly earlier than the cup.
    */
   tl.to(espressoCrema, {
     autoAlpha: 0,
@@ -68,97 +65,122 @@ export function animateEspressoToCortado(
   );
 
   /*
-   * 4. Coffee starts filling
+   * 4. Espresso settles into the glass
    *
-   * The rect itself stays in place.
-   * Its visible portion is controlled by clip-path.
-   *
-   * We reveal the coffee from bottom to top using scaleY.
+   * Slightly faster than milk.
+   * This creates the impression that the coffee
+   * reaches the bottom before the milk layer develops.
    */
   tl.fromTo(
     cortadoLiquid,
     {
-      scaleY: 0.05,
+      scaleY: 0.02,
+      scaleX: 0.985,
       transformOrigin: 'center bottom',
     },
     {
       scaleY: 1,
-      duration: 0.65,
+      scaleX: 1,
+      duration: 0.6,
       ease: 'power2.out',
     },
-    '<0.15',
+    '<0.12',
   );
 
   /*
-   * 5. Milk stream appears
+   * 5. Coffee surface settles
+   *
+   * Very subtle horizontal movement.
+   * Avoids the mechanical "rectangle fill" look.
+   */
+  tl.to(cortadoLiquid, {
+    scaleX: 1.012,
+    duration: 0.1,
+    ease: 'power1.out',
+  });
+
+  tl.to(cortadoLiquid, {
+    scaleX: 1,
+    duration: 0.16,
+    ease: 'power2.out',
+  });
+
+  /*
+   * 6. Milk stream appears
+   *
+   * The stream starts slightly before the milk layer.
    */
   tl.fromTo(
     cortadoStream,
     {
       autoAlpha: 0,
       scaleY: 0,
+      scaleX: 0.92,
       transformOrigin: 'center top',
     },
     {
       autoAlpha: 1,
       scaleY: 1,
-      duration: 0.3,
+      scaleX: 1,
+      duration: 0.28,
       ease: 'power2.out',
     },
-    '<0.18',
+    '<0.02',
   );
 
   /*
-   * 6. Milk fills the upper layer
+   * 7. Milk fills the upper layer
    */
   tl.fromTo(
     cortadoMilk,
     {
-      scaleY: 0.05,
+      scaleY: 0.02,
+      scaleX: 0.985,
       transformOrigin: 'center bottom',
     },
     {
       scaleY: 1,
-      duration: 0.8,
+      scaleX: 1,
+      duration: 0.72,
       ease: 'power2.out',
     },
-    '<0.05',
+    '<0.04',
   );
 
   /*
-   * 7. Small settling movement
-   *
-   * Gives the liquid a subtle "settle"
-   * instead of stopping abruptly.
+   * 8. Milk surface settles
    */
   tl.to(cortadoMilk, {
-    scaleY: 1.015,
-    duration: 0.12,
+    scaleX: 1.015,
+    scaleY: 1.008,
+    duration: 0.1,
     ease: 'power1.out',
   });
 
   tl.to(cortadoMilk, {
+    scaleX: 1,
     scaleY: 1,
     duration: 0.18,
     ease: 'power2.out',
   });
 
   /*
-   * 8. Stop pouring
+   * 9. Stop pouring
    */
   tl.to(
     cortadoStream,
     {
       autoAlpha: 0,
-      scaleY: 0,
-      duration: 0.3,
+      scaleY: 0.15,
+      scaleX: 0.94,
+      duration: 0.22,
       ease: 'power2.in',
     },
-    '<0.02',
+    '<0.03',
   );
 
   /*
-   * 9. Text transition
+   * 10. Text transition
    */
   if (textCards[1]) {
     tl.to(
