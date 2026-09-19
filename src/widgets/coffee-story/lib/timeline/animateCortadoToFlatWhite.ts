@@ -21,22 +21,27 @@ export function animateCortadoToFlatWhite(
   } = visual;
 
   /*
-   * 1. Finish Cortado
+   * 1. Hold Cortado
    */
-  tl.to(
-    cortadoGlass,
-    {
-      autoAlpha: 0,
-      scale: 0.94,
-      y: -10,
-      duration: STEP_DURATION,
-      ease: 'power2.inOut',
-    },
-    `+=${HOLD_DURATION}`,
-  );
+  tl.to(cortadoGlass, {
+    duration: HOLD_DURATION,
+  });
 
   /*
-   * 2. Prepare Flat White cup
+   * 2. Cortado exits
+   *
+   * Slight upward movement + subtle scale down.
+   */
+  tl.to(cortadoGlass, {
+    autoAlpha: 0,
+    scale: 0.94,
+    y: -10,
+    duration: STEP_DURATION,
+    ease: 'power2.inOut',
+  });
+
+  /*
+   * 3. Flat White cup enters
    */
   tl.to(
     flatWhiteCup,
@@ -51,72 +56,140 @@ export function animateCortadoToFlatWhite(
   );
 
   /*
-   * 3. Espresso extraction
+   * 4. Espresso extraction
+   *
+   * Coffee reaches the bottom first.
+   * Slight horizontal settling keeps the fill
+   * from looking like a rigid rectangle.
    */
-  tl.to(flatWhiteStream, {
-    autoAlpha: 1,
-    scaleY: 1,
-    duration: 0.35,
-    ease: 'power2.out',
-  });
-
   tl.fromTo(
     flatWhiteLiquid,
     {
-      scaleY: 0,
+      scaleY: 0.02,
+      scaleX: 0.985,
       transformOrigin: 'center bottom',
     },
     {
       scaleY: 1,
-      duration: 0.7,
+      scaleX: 1,
+      duration: 0.62,
       ease: 'power2.out',
     },
-    '<',
+    '<0.12',
   );
 
   /*
-   * 4. Microfoam
+   * 5. Coffee surface settles
+   */
+  tl.to(flatWhiteLiquid, {
+    scaleX: 1.012,
+    duration: 0.1,
+    ease: 'power1.out',
+  });
+
+  tl.to(flatWhiteLiquid, {
+    scaleX: 1,
+    duration: 0.16,
+    ease: 'power2.out',
+  });
+
+  /*
+   * 6. Microfoam stream appears
+   */
+  tl.fromTo(
+    flatWhiteStream,
+    {
+      autoAlpha: 0,
+      scaleY: 0,
+      scaleX: 0.92,
+      transformOrigin: 'center top',
+    },
+    {
+      autoAlpha: 1,
+      scaleY: 1,
+      scaleX: 1,
+      duration: 0.28,
+      ease: 'power2.out',
+    },
+    '<0.02',
+  );
+
+  /*
+   * 7. Microfoam fills the upper layer
    */
   tl.fromTo(
     flatWhiteMilk,
     {
-      scaleY: 0,
+      scaleY: 0.02,
+      scaleX: 0.985,
       transformOrigin: 'center bottom',
     },
     {
       scaleY: 1,
-      duration: 0.8,
+      scaleX: 1,
+      duration: 0.76,
       ease: 'power2.out',
     },
-    '<0.15',
+    '<0.04',
   );
 
   /*
-   * 5. Finish extraction
+   * 8. Microfoam surface settles
    */
-  tl.to(flatWhiteStream, {
-    autoAlpha: 0,
-    scaleY: 0,
-    duration: 0.3,
-    ease: 'power2.in',
+  tl.to(flatWhiteMilk, {
+    scaleX: 1.015,
+    scaleY: 1.008,
+    duration: 0.1,
+    ease: 'power1.out',
+  });
+
+  tl.to(flatWhiteMilk, {
+    scaleX: 1,
+    scaleY: 1,
+    duration: 0.18,
+    ease: 'power2.out',
   });
 
   /*
-   * 6. Crema / microfoam surface
+   * 9. Stop pouring
    */
   tl.to(
+    flatWhiteStream,
+    {
+      autoAlpha: 0,
+      scaleY: 0.15,
+      scaleX: 0.94,
+      duration: 0.22,
+      ease: 'power2.in',
+    },
+    '<0.03',
+  );
+
+  /*
+   * 10. Crema / microfoam surface appears
+   *
+   * Subtle scale keeps the transition organic.
+   */
+  tl.fromTo(
     flatWhiteCrema,
+    {
+      autoAlpha: 0,
+      scaleX: 0.96,
+      scaleY: 0.96,
+      transformOrigin: 'center center',
+    },
     {
       autoAlpha: 1,
       scaleX: 1,
-      duration: 0.45,
+      scaleY: 1,
+      duration: 0.4,
       ease: 'power2.out',
     },
     '<0.05',
   );
 
   /*
-   * 7. Text transition
+   * 11. Text transition
    */
   if (textCards[2]) {
     tl.to(
