@@ -1,3 +1,4 @@
+import { CoffeeMenu } from '@/widgets/coffee-menu';
 import { CoffeeStory } from '@/widgets/coffee-story';
 import { Header } from '@/widgets/header';
 import { Hero } from '@/widgets/hero';
@@ -9,9 +10,7 @@ export function HomePage() {
       <Header />
       <Hero />
       <CoffeeStory />
-
-      {/* Тимчасова секція для тестування scroll */}
-      <div className={styles.placeholder} />
+      <CoffeeMenu />
     </main>
   );
 }
