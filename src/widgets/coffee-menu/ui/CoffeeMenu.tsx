@@ -14,7 +14,7 @@ export function CoffeeMenu() {
           </div>
 
           <div className={styles.headingRow}>
-            <h2 id="coffee-menu-heading" className={styles.title}>
+            <h2 id="coffee-menu-heading" className={styles.headingTitle}>
               Choose your
               <br />
               <em>moment.</em>

@@ -25,10 +25,13 @@ export function CoffeeMenuCard({ item }: CoffeeMenuCardProps) {
       </div>
 
       <div className={styles.content}>
-        <h3 className={styles.title}>{item.title}</h3>
+        <h3 className={styles.cardTitle}>{item.title}</h3>
+
         <p className={styles.description}>{item.description}</p>
+
         <div className={styles.footer}>
           <span>{item.details}</span>
+
           <span className={styles.arrow} aria-hidden="true">
             ↗
           </span>
