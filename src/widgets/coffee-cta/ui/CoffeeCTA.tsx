@@ -12,10 +12,10 @@ export function CoffeeCTA() {
           </div>
 
           <div className={styles.main}>
-            <div className={styles.heading} id="coffee-cta-heading">
+            <h2 id="coffee-cta-heading" className={styles.heading}>
               <span>Good coffee.</span>
               <em>Right now.</em>
-            </div>
+            </h2>
 
             <div className={styles.action}>
               <p className={styles.description}>
