@@ -1,3 +1,4 @@
+import { CoffeeCTA } from '@/widgets/coffee-cta';
 import { CoffeeMenu } from '@/widgets/coffee-menu';
 import { CoffeeStory } from '@/widgets/coffee-story';
 import { Header } from '@/widgets/header';
@@ -11,6 +12,7 @@ export function HomePage() {
       <Hero />
       <CoffeeStory />
       <CoffeeMenu />
+      <CoffeeCTA />
     </main>
   );
 }
