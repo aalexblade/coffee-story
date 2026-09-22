@@ -1,8 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import type { CoffeeOrderLine } from '../model/order.types';
+import type { CoffeeOrder, CoffeeOrderLine } from '../model/order.types';
 import styles from './CoffeeOrder.module.css';
+import { OrderConfirmation } from './OrderConfirmation';
 
 const ORDER_ITEMS: CoffeeOrderLine[] = [
   {
@@ -30,9 +31,14 @@ const ORDER_ITEMS: CoffeeOrderLine[] = [
 
 const PICKUP_TIMES = ['08:30', '09:00', '09:30', '10:00', '10:30'];
 
+function generateOrderId(): string {
+  return `CO-${Math.floor(1000 + Math.random() * 9000)}`;
+}
+
 export function CoffeeOrder() {
   const [items, setItems] = useState(ORDER_ITEMS);
   const [pickupTime, setPickupTime] = useState(PICKUP_TIMES[0]);
+  const [order, setOrder] = useState<CoffeeOrder | null>(null);
 
   const selectedItems = useMemo(
     () => items.filter((item) => item.quantity > 0),
@@ -46,10 +52,7 @@ export function CoffeeOrder() {
 
   const totalPrice = useMemo(
     () =>
-      selectedItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0,
-      ),
+      selectedItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [selectedItems],
   );
 
@@ -65,6 +68,33 @@ export function CoffeeOrder() {
       ),
     );
   };
+
+  const handleSubmit = () => {
+    if (selectedItems.length === 0) {
+      return;
+    }
+
+    const newOrder: CoffeeOrder = {
+      id: generateOrderId(),
+      pickupTime,
+      items: selectedItems,
+      totalQuantity,
+      totalPrice,
+      createdAt: new Date().toISOString(),
+    };
+
+    setOrder(newOrder);
+  };
+
+  const handleOrderAgain = () => {
+    setItems(ORDER_ITEMS);
+    setPickupTime(PICKUP_TIMES[0]);
+    setOrder(null);
+  };
+
+  if (order) {
+    return <OrderConfirmation order={order} onOrderAgain={handleOrderAgain} />;
+  }
 
   return (
     <section
@@ -95,7 +125,7 @@ export function CoffeeOrder() {
 
         <div className={styles.layout}>
           <div className={styles.products}>
-            {items.map((item) => (
+            {items.map((item, index) => (
               <article
                 key={item.id}
                 className={`${styles.product} ${
@@ -104,7 +134,7 @@ export function CoffeeOrder() {
               >
                 <div className={styles.productInfo}>
                   <span className={styles.productNumber}>
-                    {String(items.indexOf(item) + 1).padStart(2, '0')}
+                    {String(index + 1).padStart(2, '0')}
                   </span>
 
                   <div>
@@ -195,6 +225,7 @@ export function CoffeeOrder() {
               type="button"
               className={styles.submit}
               disabled={selectedItems.length === 0}
+              onClick={handleSubmit}
             >
               <span>Place order</span>
               <span aria-hidden="true">↗</span>
