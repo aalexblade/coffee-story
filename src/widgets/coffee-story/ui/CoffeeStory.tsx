@@ -9,6 +9,7 @@ export function CoffeeStory() {
 
   return (
     <section
+      id="coffee-story"
       ref={containerRef}
       className={styles.section}
       aria-labelledby="coffee-story-heading"
