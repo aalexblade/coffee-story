@@ -1,8 +1,8 @@
-import type { CoffeeMenuItem } from '../model/menuItems';
+import type { Coffee } from '@/entities/coffee';
 import styles from './CoffeeMenu.module.css';
 
 interface CoffeeMenuCardProps {
-  item: CoffeeMenuItem;
+  item: Coffee;
 }
 
 export function CoffeeMenuCard({ item }: CoffeeMenuCardProps) {
