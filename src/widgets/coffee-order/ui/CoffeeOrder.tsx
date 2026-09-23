@@ -1,33 +1,18 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { COFFEE_MENU } from '@/entities/coffee';
 import type { CoffeeOrder, CoffeeOrderLine } from '../model/order.types';
 import styles from './CoffeeOrder.module.css';
 import { OrderConfirmation } from './OrderConfirmation';
 
-const ORDER_ITEMS: CoffeeOrderLine[] = [
-  {
-    id: 'espresso',
-    title: 'Espresso',
-    description: '30 ml · 1 shot',
-    price: 70,
-    quantity: 0,
-  },
-  {
-    id: 'flat-white',
-    title: 'Flat White',
-    description: '180 ml · double shot',
-    price: 110,
-    quantity: 0,
-  },
-  {
-    id: 'latte',
-    title: 'Latte',
-    description: '300 ml · double shot',
-    price: 120,
-    quantity: 0,
-  },
-];
+const INITIAL_ORDER_ITEMS: CoffeeOrderLine[] = COFFEE_MENU.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.details,
+  price: item.price,
+  quantity: 0,
+}));
 
 const PICKUP_TIMES = ['08:30', '09:00', '09:30', '10:00', '10:30'];
 
@@ -36,7 +21,7 @@ function generateOrderId(): string {
 }
 
 export function CoffeeOrder() {
-  const [items, setItems] = useState(ORDER_ITEMS);
+  const [items, setItems] = useState<CoffeeOrderLine[]>(INITIAL_ORDER_ITEMS);
   const [pickupTime, setPickupTime] = useState(PICKUP_TIMES[0]);
   const [order, setOrder] = useState<CoffeeOrder | null>(null);
 
@@ -87,7 +72,7 @@ export function CoffeeOrder() {
   };
 
   const handleOrderAgain = () => {
-    setItems(ORDER_ITEMS);
+    setItems(INITIAL_ORDER_ITEMS);
     setPickupTime(PICKUP_TIMES[0]);
     setOrder(null);
   };
