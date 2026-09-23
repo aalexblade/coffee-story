@@ -1,11 +1,9 @@
-export type CoffeeOrderItem = {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-};
+import type { Coffee } from '@/entities/coffee';
 
-export type CoffeeOrderLine = CoffeeOrderItem & {
+export type CoffeeOrderLine = Pick<
+  Coffee,
+  'id' | 'title' | 'details' | 'price'
+> & {
   quantity: number;
 };
 
