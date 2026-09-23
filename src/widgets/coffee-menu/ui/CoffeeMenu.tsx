@@ -5,7 +5,11 @@ import styles from './CoffeeMenu.module.css';
 
 export function CoffeeMenu() {
   return (
-    <section className={styles.section} aria-labelledby="coffee-menu-heading">
+    <section
+      id="coffee-menu"
+      className={styles.section}
+      aria-labelledby="coffee-menu-heading"
+    >
       <Container>
         <div className={styles.header}>
           <div className={styles.eyebrow}>
