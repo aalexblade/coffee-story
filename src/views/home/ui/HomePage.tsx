@@ -4,6 +4,7 @@ import { CoffeeOrder } from '@/widgets/coffee-order';
 import { CoffeeStory } from '@/widgets/coffee-story';
 import { Header } from '@/widgets/header';
 import { Hero } from '@/widgets/hero';
+import { CoffeeFooter } from '@/widgets/coffee-footer';
 import styles from './HomePage.module.css';
 
 export function HomePage() {
@@ -15,6 +16,7 @@ export function HomePage() {
       <CoffeeMenu />
       <CoffeeOrder />
       <CoffeeCTA />
+      <CoffeeFooter />
     </main>
   );
 }
