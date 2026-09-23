@@ -1,5 +1,5 @@
 import { Container } from '@/shared/ui';
-import { COFFEE_MENU_ITEMS } from '../model/menuItems';
+import { COFFEE_MENU } from '@/entities/coffee';
 import { CoffeeMenuCard } from './CoffeeMenuCard';
 import styles from './CoffeeMenu.module.css';
 
@@ -32,7 +32,7 @@ export function CoffeeMenu() {
         </div>
 
         <div className={styles.grid}>
-          {COFFEE_MENU_ITEMS.map((item) => (
+          {COFFEE_MENU.map((item) => (
             <CoffeeMenuCard key={item.id} item={item} />
           ))}
         </div>
