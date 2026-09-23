@@ -1,28 +1,37 @@
-import type { CoffeeItem } from '../model/coffee.types';
+import type { Coffee } from '../model/coffee.types';
 
-export const COFFEE_MENU: CoffeeItem[] = [
+export const COFFEE_MENU: Coffee[] = [
   {
     id: 'espresso',
+    number: '01',
+    tag: 'INTENSE',
     title: 'Espresso',
-    description: '30 ml · 1 shot',
+    description:
+      'Чистий смак обсмаженого зерна, щільна текстура та насичений післясмак.',
+    details: '30 ml · 1 shot',
     price: 70,
-    volume: '30 ml',
-    espressoShots: 1,
+    accent: 'espresso',
   },
   {
     id: 'flat-white',
+    number: '02',
+    tag: 'BALANCED',
     title: 'Flat White',
-    description: '180 ml · double shot',
+    description:
+      'Подвійний еспресо та шовковиста мікропіна для виразного кавового характеру.',
+    details: '180 ml · double shot',
     price: 110,
-    volume: '180 ml',
-    espressoShots: 2,
+    accent: 'milk',
   },
   {
     id: 'latte',
+    number: '03',
+    tag: 'SILKY',
     title: 'Latte',
-    description: '300 ml · double shot',
+    description:
+      'М’який кавовий смак, тепле молоко та тонкий шар піни з лате-артом.',
+    details: '300 ml · double shot',
     price: 120,
-    volume: '300 ml',
-    espressoShots: 2,
+    accent: 'soft',
   },
 ];
