@@ -1,11 +1,13 @@
+import Link from 'next/link';
 import styles from './Header.module.css';
 
 export function Header() {
   return (
     <header className={styles.header}>
-      <nav className={styles.nav}>
-        <span className={styles.logo}>Coffee Story</span>
-      </nav>
+      <Link href="/" className={styles.logo}>
+        Coffee Story
+      </Link>
+      {/* Rest of navigation */}
     </header>
   );
 }
