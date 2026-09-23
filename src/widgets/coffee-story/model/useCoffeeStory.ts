@@ -34,7 +34,16 @@ export function useCoffeeStory() {
 
       // Fallback для користувачів із prefers-reduced-motion
       if (prefersReducedMotion) {
-        // 1. Приховуємо проміжні напої
+        // 1. Показуємо всі текстові картки доступними для читання
+        textCards.forEach((card) => {
+          gsap.set(card, {
+            autoAlpha: 1,
+            y: 0,
+            clearProps: 'transform',
+          });
+        });
+
+        // 2. Показуємо фінальну візуальну сцену
         gsap.set(
           [
             visual.hero,
@@ -46,15 +55,6 @@ export function useCoffeeStory() {
           { autoAlpha: 0 },
         );
 
-        // 2. Приховуємо всі текстові картки, крім останньої
-        textCards.forEach((card, index) => {
-          gsap.set(card, {
-            autoAlpha: index === textCards.length - 1 ? 1 : 0,
-            y: 0,
-          });
-        });
-
-        // 3. Відкриваємо фінальну сцену з Latte
         gsap.set(visual.latteGlass, { autoAlpha: 1, scale: 1, y: 0 });
         gsap.set([visual.latteCoffee, visual.latteMilk], { scaleY: 1 });
         gsap.set([visual.latteFoam, visual.latteArt], {
