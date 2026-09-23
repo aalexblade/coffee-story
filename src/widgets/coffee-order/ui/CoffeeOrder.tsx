@@ -9,7 +9,7 @@ import { OrderConfirmation } from './OrderConfirmation';
 const INITIAL_ORDER_ITEMS: CoffeeOrderLine[] = COFFEE_MENU.map((item) => ({
   id: item.id,
   title: item.title,
-  description: item.details,
+  details: item.details,
   price: item.price,
   quantity: 0,
 }));
@@ -124,7 +124,7 @@ export function CoffeeOrder() {
 
                   <div>
                     <h3>{item.title}</h3>
-                    <p>{item.description}</p>
+                    <p>{item.details}</p>
                   </div>
                 </div>
 
