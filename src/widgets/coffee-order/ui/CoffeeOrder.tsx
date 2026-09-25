@@ -1,29 +1,64 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { COFFEE_MENU } from '@/entities/coffee';
-import type { CoffeeOrder, CoffeeOrderLine } from '../model/order.types';
+import { useEffect, useMemo, useState } from 'react';
+import { fetchCoffeeMenu, type Coffee } from '@/entities/coffee';
+import { fetchPickupSlots } from '../api/fetchPickupSlots';
+import { createOrder } from '../api/createOrder';
+import type {
+  CoffeeOrder,
+  CoffeeOrderLine,
+  PickupSlot,
+} from '../model/order.types';
 import styles from './CoffeeOrder.module.css';
 import { OrderConfirmation } from './OrderConfirmation';
 
-const INITIAL_ORDER_ITEMS: CoffeeOrderLine[] = COFFEE_MENU.map((item) => ({
-  id: item.id,
-  title: item.title,
-  details: item.details,
-  price: item.price,
-  quantity: 0,
-}));
-
-const PICKUP_TIMES = ['08:30', '09:00', '09:30', '10:00', '10:30'];
-
-function generateOrderId(): string {
-  return `CO-${Math.floor(1000 + Math.random() * 9000)}`;
-}
-
 export function CoffeeOrder() {
-  const [items, setItems] = useState<CoffeeOrderLine[]>(INITIAL_ORDER_ITEMS);
-  const [pickupTime, setPickupTime] = useState(PICKUP_TIMES[0]);
+  const [items, setItems] = useState<CoffeeOrderLine[]>([]);
+  const [slots, setSlots] = useState<PickupSlot[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<PickupSlot | null>(null);
+
   const [order, setOrder] = useState<CoffeeOrder | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const todayDate = useMemo(() => new Date().toISOString().split('T')[0], []);
+
+  useEffect(() => {
+    async function loadInitialData() {
+      try {
+        setIsLoading(true);
+        setError(null);
+
+        const [menuData, slotsData] = await Promise.all([
+          fetchCoffeeMenu(),
+          fetchPickupSlots(todayDate),
+        ]);
+
+        const orderLines: CoffeeOrderLine[] = menuData.map((item: Coffee) => ({
+          id: item.id,
+          title: item.title,
+          details: item.details,
+          price: item.price,
+          quantity: 0,
+        }));
+
+        setItems(orderLines);
+        setSlots(slotsData);
+
+        if (slotsData.length > 0) {
+          setSelectedSlot(slotsData[0]);
+        }
+      } catch (err) {
+        console.error('Error initializing CoffeeOrder:', err);
+        setError('Не вдалося завантажити дані. Будь ласка, оновіть сторінку.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadInitialData();
+  }, [todayDate]);
 
   const selectedItems = useMemo(
     () => items.filter((item) => item.quantity > 0),
@@ -54,26 +89,50 @@ export function CoffeeOrder() {
     );
   };
 
-  const handleSubmit = () => {
-    if (selectedItems.length === 0) {
+  const handleSubmit = async () => {
+    if (selectedItems.length === 0 || !selectedSlot) {
       return;
     }
 
-    const newOrder: CoffeeOrder = {
-      id: generateOrderId(),
-      pickupTime,
-      items: selectedItems,
-      totalQuantity,
-      totalPrice,
-      createdAt: new Date().toISOString(),
-    };
+    try {
+      setIsSubmitting(true);
+      setError(null);
 
-    setOrder(newOrder);
+      const createdOrderData = await createOrder({
+        pickupSlotId: selectedSlot.id,
+        items: selectedItems.map((item) => ({
+          coffee_id: item.id,
+          quantity: item.quantity,
+        })),
+      });
+
+      const formattedOrderId = `CO-${String(createdOrderData.orderNumber).padStart(6, '0')}`;
+
+      const newOrder: CoffeeOrder = {
+        id: formattedOrderId,
+        pickupTime: selectedSlot.slot_time.slice(0, 5),
+        items: selectedItems,
+        totalQuantity,
+        totalPrice,
+        createdAt: new Date().toISOString(),
+      };
+
+      setOrder(newOrder);
+    } catch (err) {
+      console.error('Error submitting order:', err);
+      setError('Не вдалося оформити замовлення. Спробуйте ще раз.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleOrderAgain = () => {
-    setItems(INITIAL_ORDER_ITEMS);
-    setPickupTime(PICKUP_TIMES[0]);
+    setItems((currentItems) =>
+      currentItems.map((item) => ({ ...item, quantity: 0 })),
+    );
+    if (slots.length > 0) {
+      setSelectedSlot(slots[0]);
+    }
     setOrder(null);
   };
 
@@ -108,115 +167,131 @@ export function CoffeeOrder() {
           </div>
         </div>
 
-        <div className={styles.layout}>
-          <div className={styles.products}>
-            {items.map((item, index) => (
-              <article
-                key={item.id}
-                className={`${styles.product} ${
-                  item.quantity > 0 ? styles.selected : ''
-                }`}
-              >
-                <div className={styles.productInfo}>
-                  <span className={styles.productNumber}>
-                    {String(index + 1).padStart(2, '0')}
-                  </span>
+        {error && <div className={styles.error}>{error}</div>}
 
-                  <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.details}</p>
-                  </div>
-                </div>
-
-                <div className={styles.productAction}>
-                  <span className={styles.price}>{item.price} ₴</span>
-
-                  <div
-                    className={styles.quantity}
-                    aria-label={`${item.title} quantity`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => updateQuantity(item.id, -1)}
-                      disabled={item.quantity === 0}
-                      aria-label={`Зменшити ${item.title}`}
-                    >
-                      −
-                    </button>
-
-                    <span aria-live="polite">{item.quantity}</span>
-
-                    <button
-                      type="button"
-                      onClick={() => updateQuantity(item.id, 1)}
-                      aria-label={`Додати ${item.title}`}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <aside className={styles.summary}>
-            <div className={styles.summaryTop}>
-              <span>YOUR ORDER</span>
-              <span>{totalQuantity} ITEMS</span>
-            </div>
-
-            <div className={styles.summaryItems}>
-              {selectedItems.length === 0 ? (
-                <p className={styles.empty}>
-                  Обери хоча б один напій, щоб продовжити.
-                </p>
-              ) : (
-                selectedItems.map((item) => (
-                  <div key={item.id} className={styles.summaryItem}>
-                    <span>
-                      {item.title} × {item.quantity}
+        {isLoading ? (
+          <div className={styles.loading}>Завантаження меню...</div>
+        ) : (
+          <div className={styles.layout}>
+            <div className={styles.products}>
+              {items.map((item, index) => (
+                <article
+                  key={item.id}
+                  className={`${styles.product} ${
+                    item.quantity > 0 ? styles.selected : ''
+                  }`}
+                >
+                  <div className={styles.productInfo}>
+                    <span className={styles.productNumber}>
+                      {String(index + 1).padStart(2, '0')}
                     </span>
 
-                    <span>{item.price * item.quantity} ₴</span>
+                    <div>
+                      <h3>{item.title}</h3>
+                      <p>{item.details}</p>
+                    </div>
                   </div>
-                ))
-              )}
+
+                  <div className={styles.productAction}>
+                    <span className={styles.price}>{item.price} ₴</span>
+
+                    <div
+                      className={styles.quantity}
+                      aria-label={`${item.title} quantity`}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.id, -1)}
+                        disabled={item.quantity === 0 || isSubmitting}
+                        aria-label={`Зменшити ${item.title}`}
+                      >
+                        −
+                      </button>
+
+                      <span aria-live="polite">{item.quantity}</span>
+
+                      <button
+                        type="button"
+                        onClick={() => updateQuantity(item.id, 1)}
+                        disabled={isSubmitting}
+                        aria-label={`Додати ${item.title}`}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
 
-            <div className={styles.pickup}>
-              <span className={styles.pickupLabel}>PICKUP TIME</span>
-
-              <div className={styles.times}>
-                {PICKUP_TIMES.map((time) => (
-                  <button
-                    key={time}
-                    type="button"
-                    className={time === pickupTime ? styles.activeTime : ''}
-                    onClick={() => setPickupTime(time)}
-                    aria-pressed={time === pickupTime}
-                  >
-                    {time}
-                  </button>
-                ))}
+            <aside className={styles.summary}>
+              <div className={styles.summaryTop}>
+                <span>YOUR ORDER</span>
+                <span>{totalQuantity} ITEMS</span>
               </div>
-            </div>
 
-            <div className={styles.total}>
-              <span>Total</span>
-              <strong>{totalPrice} ₴</strong>
-            </div>
+              <div className={styles.summaryItems}>
+                {selectedItems.length === 0 ? (
+                  <p className={styles.empty}>
+                    Обери хоча б один напій, щоб продовжити.
+                  </p>
+                ) : (
+                  selectedItems.map((item) => (
+                    <div key={item.id} className={styles.summaryItem}>
+                      <span>
+                        {item.title} × {item.quantity}
+                      </span>
 
-            <button
-              type="button"
-              className={styles.submit}
-              disabled={selectedItems.length === 0}
-              onClick={handleSubmit}
-            >
-              <span>Place order</span>
-              <span aria-hidden="true">↗</span>
-            </button>
-          </aside>
-        </div>
+                      <span>{item.price * item.quantity} ₴</span>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className={styles.pickup}>
+                <span className={styles.pickupLabel}>PICKUP TIME</span>
+
+                <div className={styles.times}>
+                  {slots.length === 0 ? (
+                    <p className={styles.empty}>Немає доступних слотів</p>
+                  ) : (
+                    slots.map((slot) => (
+                      <button
+                        key={slot.id}
+                        type="button"
+                        className={
+                          selectedSlot?.id === slot.id ? styles.activeTime : ''
+                        }
+                        onClick={() => setSelectedSlot(slot)}
+                        disabled={isSubmitting}
+                        aria-pressed={selectedSlot?.id === slot.id}
+                      >
+                        {slot.slot_time.slice(0, 5)}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div className={styles.total}>
+                <span>Total</span>
+                <strong>{totalPrice} ₴</strong>
+              </div>
+
+              <button
+                type="button"
+                className={styles.submit}
+                disabled={
+                  selectedItems.length === 0 || !selectedSlot || isSubmitting
+                }
+                onClick={handleSubmit}
+              >
+                <span>{isSubmitting ? 'Processing...' : 'Place order'}</span>
+                <span aria-hidden="true">↗</span>
+              </button>
+            </aside>
+          </div>
+        )}
       </div>
     </section>
   );
