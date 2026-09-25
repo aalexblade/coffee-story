@@ -1,7 +1,7 @@
 import { supabase } from '@/shared/api/supabase';
 import type { PickupSlot } from '../model/order.types';
 
-export async function fetchPickupSlots(): Promise<PickupSlot[]> {
+export async function fetchPickupSlots(date: string): Promise<PickupSlot[]> {
   const { data, error } = await supabase
     .from('pickup_slots')
     .select('*')
@@ -13,5 +13,8 @@ export async function fetchPickupSlots(): Promise<PickupSlot[]> {
     throw new Error('Failed to load pickup slots');
   }
 
-  return data ?? [];
+  // Фільтрація по slot_date (якщо поле додано в DB)
+  return ((data as unknown as PickupSlot[]) ?? []).filter(
+    (slot) => !('slot_date' in slot) || (slot as { slot_date?: string }).slot_date === date
+  );
 }
