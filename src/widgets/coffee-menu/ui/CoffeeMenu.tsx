@@ -3,8 +3,16 @@ import { Container } from '@/shared/ui';
 import { CoffeeMenuCard } from './CoffeeMenuCard';
 import styles from './CoffeeMenu.module.css';
 
+export const dynamic = 'force-dynamic';
+
 export async function CoffeeMenu() {
-  const menuItems: Coffee[] = await fetchCoffeeMenu();
+  let menuItems: Coffee[] = [];
+
+  try {
+    menuItems = await fetchCoffeeMenu();
+  } catch (error) {
+    console.error('Failed to fetch coffee menu on build/render:', error);
+  }
 
   return (
     <section
