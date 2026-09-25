@@ -1,7 +1,7 @@
 begin;
 
 -- =========================================================
--- CREATE ORDER RPC FUNCTION (WITH VALIDATIONS & DUP CHECK)
+-- CREATE ORDER RPC FUNCTION
 -- =========================================================
 create or replace function public.create_order(
   p_pickup_slot_id uuid,
@@ -31,10 +31,10 @@ declare
   v_title text;
   v_current_orders integer;
   v_max_orders integer;
-  v_seen_coffee_ids text[] := '{}';
+  v_seen_coffee_ids text[] := array[]::text[];
 begin
 
-  -- 1. Validate items payload structure
+  -- 1. Validate items payload
   if p_items is null
      or jsonb_typeof(p_items) <> 'array'
      or jsonb_array_length(p_items) = 0 then
@@ -75,7 +75,7 @@ begin
     raise exception 'Invalid customer phone';
   end if;
 
-  -- 5. Insert base order record
+  -- 5. Insert order record
   insert into public.orders (
     pickup_slot_id,
     status,
@@ -91,7 +91,7 @@ begin
   returning id, order_number
   into v_order_id, v_order_number;
 
-  -- 6. Insert items with duplication check & quantity thresholds
+  -- 6. Insert items and extract prices from DB
   for v_item in select value from jsonb_array_elements(p_items)
   loop
     v_coffee_id := v_item ->> 'coffee_id';
@@ -101,22 +101,15 @@ begin
       raise exception 'coffee_id is required';
     end if;
 
-    if v_quantity is null or v_quantity <= 0 then
-      raise exception 'Quantity must be greater than zero';
+    if v_seen_coffee_ids @> array[v_coffee_id] then
+      raise exception 'Duplicate coffee_id "%" in order items', v_coffee_id;
     end if;
-
-    if v_quantity > 20 then
-      raise exception 'Maximum quantity per item is 20';
-    end if;
-
-    -- Check for duplicates in the payload array
-    if v_coffee_id = any(v_seen_coffee_ids) then
-      raise exception 'Duplicate coffee item found in order: %', v_coffee_id;
-    end if;
-
     v_seen_coffee_ids := array_append(v_seen_coffee_ids, v_coffee_id);
 
-    -- Fetch actual price and availability from catalog
+    if v_quantity is null or v_quantity <= 0 or v_quantity > 20 then
+      raise exception 'Quantity for "%" must be between 1 and 20', v_coffee_id;
+    end if;
+
     select c.title, c.price
     into v_title, v_unit_price
     from public.coffee c
@@ -124,7 +117,7 @@ begin
       and c.is_available = true;
 
     if not found then
-      raise exception 'Coffee "%" is unavailable or does not exist', v_coffee_id;
+      raise exception 'Coffee "%" is unavailable', v_coffee_id;
     end if;
 
     insert into public.order_items (
@@ -143,7 +136,7 @@ begin
     );
   end loop;
 
-  -- 7. Calculate total amounts from DB snapshot records
+  -- 7. Calculate totals
   select
     coalesce(sum(oi.quantity), 0),
     coalesce(sum(oi.subtotal), 0)

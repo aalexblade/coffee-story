@@ -1,5 +1,6 @@
--- Seed data for Coffee Story
-
+-- =========================================================
+-- COFFEE SEED DATA
+-- =========================================================
 insert into public.coffee (
   id,
   slug,
@@ -47,14 +48,25 @@ insert into public.coffee (
   120,
   'soft',
   3
-);
+)
+on conflict (id) do nothing;
 
+-- =========================================================
+-- PICKUP SLOTS SEED DATA (TODAY & TOMORROW)
+-- =========================================================
 insert into public.pickup_slots (
+  slot_date,
   slot_time,
   max_orders
 ) values
-  ('08:30', 5),
-  ('09:00', 5),
-  ('09:30', 5),
-  ('10:00', 5),
-  ('10:30', 5);
+  (current_date, '08:30', 5),
+  (current_date, '09:00', 5),
+  (current_date, '09:30', 5),
+  (current_date, '10:00', 5),
+  (current_date, '10:30', 5),
+  (current_date + interval '1 day', '08:30', 5),
+  (current_date + interval '1 day', '09:00', 5),
+  (current_date + interval '1 day', '09:30', 5),
+  (current_date + interval '1 day', '10:00', 5),
+  (current_date + interval '1 day', '10:30', 5)
+on conflict (slot_date, slot_time) do nothing;
