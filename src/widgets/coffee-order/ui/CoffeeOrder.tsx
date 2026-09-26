@@ -22,7 +22,15 @@ export function CoffeeOrder() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const todayDate = useMemo(() => new Date().toISOString().split('T')[0], []);
+  // Формування локальної дати YYYY-MM-DD
+  const todayDate = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }, []);
 
   useEffect(() => {
     async function loadInitialData() {
@@ -108,12 +116,13 @@ export function CoffeeOrder() {
 
       const formattedOrderId = `CO-${String(createdOrderData.orderNumber).padStart(6, '0')}`;
 
+      // Використовуємо підтверджені ціну та кількість безпосередньо з сервера
       const newOrder: CoffeeOrder = {
         id: formattedOrderId,
         pickupTime: selectedSlot.slot_time.slice(0, 5),
         items: selectedItems,
-        totalQuantity,
-        totalPrice,
+        totalQuantity: createdOrderData.totalQuantity,
+        totalPrice: createdOrderData.totalPrice,
         createdAt: new Date().toISOString(),
       };
 
