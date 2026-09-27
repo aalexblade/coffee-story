@@ -13,5 +13,5 @@ export async function fetchCoffeeMenu(): Promise<Coffee[]> {
     throw new Error('Failed to load coffee menu');
   }
 
-  return (data as Coffee[]) ?? [];
+  return data ?? [];
 }
