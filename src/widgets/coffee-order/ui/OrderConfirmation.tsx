@@ -31,8 +31,9 @@ export function OrderConfirmation({
             </h2>
 
             <p className={styles.intro}>
-              Замовлення <strong>#{order.id}</strong> прийнято. Ми підготуємо
-              його до <strong>{order.pickupTime}</strong>.
+              Замовлення <strong>#{order.formattedOrderNumber}</strong>{' '}
+              прийнято. Ми підготуємо його до{' '}
+              <strong>{order.pickupTime}</strong>.
             </p>
           </div>
         </div>
