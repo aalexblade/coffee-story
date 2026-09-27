@@ -10,20 +10,20 @@ export type CoffeeOrderLine = Pick<
   quantity: number;
 };
 
-export type CoffeeOrder = {
+export interface CoffeeOrder {
   id: string;
-  orderNumber?: number;
-  formattedOrderNumber?: string;
+  orderNumber: number;
+  formattedOrderNumber: string;
   pickupTime: string;
   items: CoffeeOrderLine[];
   totalQuantity: number;
   totalPrice: number;
-  createdAt: string;
-};
+}
 
 export interface CreateOrderItemPayload {
   coffee_id: string;
   quantity: number;
+  [key: string]: unknown;
 }
 
 export interface CreateOrderPayload {
