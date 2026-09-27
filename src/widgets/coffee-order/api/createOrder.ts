@@ -20,11 +20,11 @@ export async function createOrder(
     throw new Error(error.message || 'Failed to place order');
   }
 
-  if (!data || data.length === 0) {
+  const result = data?.[0];
+
+  if (!result) {
     throw new Error('No order confirmation returned');
   }
-
-  const result = data[0];
 
   return {
     orderId: result.order_id,
