@@ -22,16 +22,6 @@ export function CoffeeOrder() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Формування локальної дати YYYY-MM-DD
-  const todayDate = useMemo(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }, []);
-
   useEffect(() => {
     async function loadInitialData() {
       try {
@@ -40,7 +30,7 @@ export function CoffeeOrder() {
 
         const [menuData, slotsData] = await Promise.all([
           fetchCoffeeMenu(),
-          fetchPickupSlots(todayDate),
+          fetchPickupSlots(),
         ]);
 
         const orderLines: CoffeeOrderLine[] = menuData.map((item: Coffee) => ({
@@ -66,7 +56,7 @@ export function CoffeeOrder() {
     }
 
     loadInitialData();
-  }, [todayDate]);
+  }, []);
 
   const selectedItems = useMemo(
     () => items.filter((item) => item.quantity > 0),
@@ -90,7 +80,7 @@ export function CoffeeOrder() {
         item.id === id
           ? {
               ...item,
-              quantity: Math.max(0, item.quantity + delta),
+              quantity: Math.min(20, Math.max(0, item.quantity + delta)),
             }
           : item,
       ),
@@ -114,22 +104,24 @@ export function CoffeeOrder() {
         })),
       });
 
-      const formattedOrderId = `CO-${String(createdOrderData.orderNumber).padStart(6, '0')}`;
-
-      // Використовуємо підтверджені ціну та кількість безпосередньо з сервера
       const newOrder: CoffeeOrder = {
-        id: formattedOrderId,
+        id: createdOrderData.orderId,
+        orderNumber: createdOrderData.orderNumber,
+        formattedOrderNumber: createdOrderData.formattedOrderNumber,
         pickupTime: selectedSlot.slot_time.slice(0, 5),
         items: selectedItems,
         totalQuantity: createdOrderData.totalQuantity,
         totalPrice: createdOrderData.totalPrice,
-        createdAt: new Date().toISOString(),
       };
 
       setOrder(newOrder);
     } catch (err) {
       console.error('Error submitting order:', err);
-      setError('Не вдалося оформити замовлення. Спробуйте ще раз.');
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Не вдалося оформити замовлення. Спробуйте ще раз.';
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -222,7 +214,7 @@ export function CoffeeOrder() {
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, 1)}
-                        disabled={isSubmitting}
+                        disabled={item.quantity >= 20 || isSubmitting}
                         aria-label={`Додати ${item.title}`}
                       >
                         +
