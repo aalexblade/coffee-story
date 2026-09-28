@@ -23,7 +23,6 @@ export interface CoffeeOrder {
 export interface CreateOrderItemPayload {
   coffee_id: string;
   quantity: number;
-  [key: string]: unknown;
 }
 
 export interface CreateOrderPayload {
