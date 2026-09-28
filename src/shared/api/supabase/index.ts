@@ -1,2 +1,2 @@
 export { supabase } from './client';
-export type { Database, Tables, Enums } from './database.types';
+export type { Database, Tables, Enums, Json } from './database.types';
