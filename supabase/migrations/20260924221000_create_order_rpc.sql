@@ -45,8 +45,9 @@ begin
   select ps.max_orders
   into v_max_orders
   from public.pickup_slots ps
-  where ps.id = p_pickup_slot_id
-    and ps.is_available = true
+where ps.id = p_pickup_slot_id
+  and ps.is_available = true
+  and ps.slot_date >= current_date
   for update;
 
   if not found then
