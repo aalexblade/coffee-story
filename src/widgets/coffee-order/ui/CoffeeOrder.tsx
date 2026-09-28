@@ -22,6 +22,15 @@ export function CoffeeOrder() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const todayDate = useMemo(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }, []);
+
   useEffect(() => {
     async function loadInitialData() {
       try {
@@ -30,7 +39,7 @@ export function CoffeeOrder() {
 
         const [menuData, slotsData] = await Promise.all([
           fetchCoffeeMenu(),
-          fetchPickupSlots(),
+          fetchPickupSlots(todayDate),
         ]);
 
         const orderLines: CoffeeOrderLine[] = menuData.map((item: Coffee) => ({
@@ -56,7 +65,7 @@ export function CoffeeOrder() {
     }
 
     loadInitialData();
-  }, []);
+  }, [todayDate]);
 
   const selectedItems = useMemo(
     () => items.filter((item) => item.quantity > 0),
