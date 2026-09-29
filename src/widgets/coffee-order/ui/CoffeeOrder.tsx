@@ -1,9 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { fetchCoffeeMenu, type Coffee } from '@/entities/coffee';
 import { fetchPickupSlots } from '../api/fetchPickupSlots';
 import { createOrder } from '../api/createOrder';
+import {
+  clearStoredOrder,
+  getOrderServerSnapshot,
+  getStoredOrder,
+  saveOrder,
+  subscribeToOrderStore,
+} from '../lib/orderStorage';
 import type {
   CoffeeOrder,
   CoffeeOrderLine,
@@ -12,41 +19,17 @@ import type {
 import styles from './CoffeeOrder.module.css';
 import { OrderConfirmation } from './OrderConfirmation';
 
-const ORDER_STORAGE_KEY = 'coffee-story:last-order';
-
-// Допоміжна функція для безпечного зчитування з sessionStorage
-function getInitialOrder(): CoffeeOrder | null {
-  if (typeof window === 'undefined') {
-    return null;
-  }
-
-  try {
-    const storedOrder = sessionStorage.getItem(ORDER_STORAGE_KEY);
-    if (!storedOrder) return null;
-
-    const parsedOrder = JSON.parse(storedOrder) as CoffeeOrder;
-    if (
-      parsedOrder?.id &&
-      parsedOrder?.orderNumber &&
-      parsedOrder?.formattedOrderNumber
-    ) {
-      return parsedOrder;
-    }
-  } catch (error) {
-    console.error('Failed to restore stored order:', error);
-    sessionStorage.removeItem(ORDER_STORAGE_KEY);
-  }
-
-  return null;
-}
-
 export function CoffeeOrder() {
   const [items, setItems] = useState<CoffeeOrderLine[]>([]);
   const [slots, setSlots] = useState<PickupSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<PickupSlot | null>(null);
 
-  // Ініціалізуємо стан замовлення одразу при першому рендері
-  const [order, setOrder] = useState<CoffeeOrder | null>(getInitialOrder);
+  // Синхронізуємо стан замовлення напряму зі сховищем через useSyncExternalStore
+  const order = useSyncExternalStore(
+    subscribeToOrderStore,
+    getStoredOrder,
+    getOrderServerSnapshot,
+  );
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -154,8 +137,8 @@ export function CoffeeOrder() {
         totalPrice: createdOrderData.totalPrice,
       };
 
-      setOrder(newOrder);
-      sessionStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(newOrder));
+      // Збереження у сховище автоматично сповістить useSyncExternalStore і переключить UI
+      saveOrder(newOrder);
     } catch (err) {
       console.error('Error submitting order:', err);
       const message =
@@ -169,7 +152,8 @@ export function CoffeeOrder() {
   };
 
   const handleOrderAgain = () => {
-    sessionStorage.removeItem(ORDER_STORAGE_KEY);
+    // Очищення сховища автоматично оновлює стан order до null
+    clearStoredOrder();
 
     setItems((currentItems) =>
       currentItems.map((item) => ({ ...item, quantity: 0 })),
@@ -178,8 +162,6 @@ export function CoffeeOrder() {
     if (slots.length > 0) {
       setSelectedSlot(slots[0]);
     }
-
-    setOrder(null);
   };
 
   if (order) {
@@ -287,7 +269,6 @@ export function CoffeeOrder() {
                       <span>
                         {item.title} × {item.quantity}
                       </span>
-
                       <span>{item.price * item.quantity} ₴</span>
                     </div>
                   ))
