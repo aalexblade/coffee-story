@@ -16,8 +16,11 @@ export async function createOrder(
   });
 
   if (error) {
-    console.error('Error in createOrder RPC:', error);
-    throw new Error(error.message || 'Failed to create order');
+    // Форматуємо помилку від Supabase, щоб уникнути виводу порожнього {} об'єкта
+    const errorMessage =
+      error.message || error.details || 'Failed to create order';
+    console.error('Error in createOrder RPC:', errorMessage, error);
+    throw new Error(errorMessage);
   }
 
   const result = data?.[0];
