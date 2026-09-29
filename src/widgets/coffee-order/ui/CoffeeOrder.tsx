@@ -12,12 +12,42 @@ import type {
 import styles from './CoffeeOrder.module.css';
 import { OrderConfirmation } from './OrderConfirmation';
 
+const ORDER_STORAGE_KEY = 'coffee-story:last-order';
+
+// Допоміжна функція для безпечного зчитування з sessionStorage
+function getInitialOrder(): CoffeeOrder | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    const storedOrder = sessionStorage.getItem(ORDER_STORAGE_KEY);
+    if (!storedOrder) return null;
+
+    const parsedOrder = JSON.parse(storedOrder) as CoffeeOrder;
+    if (
+      parsedOrder?.id &&
+      parsedOrder?.orderNumber &&
+      parsedOrder?.formattedOrderNumber
+    ) {
+      return parsedOrder;
+    }
+  } catch (error) {
+    console.error('Failed to restore stored order:', error);
+    sessionStorage.removeItem(ORDER_STORAGE_KEY);
+  }
+
+  return null;
+}
+
 export function CoffeeOrder() {
   const [items, setItems] = useState<CoffeeOrderLine[]>([]);
   const [slots, setSlots] = useState<PickupSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<PickupSlot | null>(null);
 
-  const [order, setOrder] = useState<CoffeeOrder | null>(null);
+  // Ініціалізуємо стан замовлення одразу при першому рендері
+  const [order, setOrder] = useState<CoffeeOrder | null>(getInitialOrder);
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +61,7 @@ export function CoffeeOrder() {
     return `${year}-${month}-${day}`;
   }, []);
 
+  // Завантаження меню та слотів
   useEffect(() => {
     async function loadInitialData() {
       try {
@@ -124,6 +155,7 @@ export function CoffeeOrder() {
       };
 
       setOrder(newOrder);
+      sessionStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(newOrder));
     } catch (err) {
       console.error('Error submitting order:', err);
       const message =
@@ -137,12 +169,16 @@ export function CoffeeOrder() {
   };
 
   const handleOrderAgain = () => {
+    sessionStorage.removeItem(ORDER_STORAGE_KEY);
+
     setItems((currentItems) =>
       currentItems.map((item) => ({ ...item, quantity: 0 })),
     );
+
     if (slots.length > 0) {
       setSelectedSlot(slots[0]);
     }
+
     setOrder(null);
   };
 
