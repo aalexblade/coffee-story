@@ -11,6 +11,7 @@ import {
   saveOrder,
   subscribeToOrderStore,
 } from '../lib/orderStorage';
+import { getOrderErrorMessage, OrderError } from '../lib/orderErrors';
 import type {
   CoffeeOrder,
   CoffeeOrderLine,
@@ -24,7 +25,6 @@ export function CoffeeOrder() {
   const [slots, setSlots] = useState<PickupSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<PickupSlot | null>(null);
 
-  // Синхронізуємо стан замовлення напряму зі сховищем через useSyncExternalStore
   const order = useSyncExternalStore(
     subscribeToOrderStore,
     getStoredOrder,
@@ -44,7 +44,6 @@ export function CoffeeOrder() {
     return `${year}-${month}-${day}`;
   }, []);
 
-  // Завантаження меню та слотів
   useEffect(() => {
     async function loadInitialData() {
       try {
@@ -137,22 +136,21 @@ export function CoffeeOrder() {
         totalPrice: createdOrderData.totalPrice,
       };
 
-      // Збереження у сховище автоматично сповістить useSyncExternalStore і переключить UI
       saveOrder(newOrder);
     } catch (err) {
       console.error('Error submitting order:', err);
-      const message =
-        err instanceof Error
-          ? err.message
-          : 'Не вдалося оформити замовлення. Спробуйте ще раз.';
-      setError(message);
+
+      if (err instanceof OrderError) {
+        setError(getOrderErrorMessage(err.code));
+      } else {
+        setError('Не вдалося оформити замовлення. Спробуйте ще раз.');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleOrderAgain = () => {
-    // Очищення сховища автоматично оновлює стан order до null
     clearStoredOrder();
 
     setItems((currentItems) =>
