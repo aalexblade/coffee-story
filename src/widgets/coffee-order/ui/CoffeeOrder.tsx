@@ -1,6 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import { fetchCoffeeMenu, type Coffee } from '@/entities/coffee';
 import { fetchPickupSlots } from '../api/fetchPickupSlots';
 import { createOrder } from '../api/createOrder';
@@ -38,16 +44,38 @@ export function CoffeeOrder() {
 
   const todayDate = useMemo(() => getTodayDate(), []);
 
+  const refreshSlots = useCallback(async () => {
+    try {
+      const slotsData = await fetchPickupSlots(todayDate);
+
+      const availableSlots = slotsData.filter((slot) =>
+        isPickupSlotInFuture(slot),
+      );
+
+      setSlots(availableSlots);
+
+      setSelectedSlot((currentSlot) => {
+        if (
+          currentSlot &&
+          availableSlots.some((slot) => slot.id === currentSlot.id)
+        ) {
+          return currentSlot;
+        }
+
+        return availableSlots[0] ?? null;
+      });
+    } catch (err) {
+      console.error('Error refreshing pickup slots:', err);
+    }
+  }, [todayDate]);
+
   useEffect(() => {
     async function loadInitialData() {
       try {
         setIsLoading(true);
         setError(null);
 
-        const [menuData, slotsData] = await Promise.all([
-          fetchCoffeeMenu(),
-          fetchPickupSlots(todayDate),
-        ]);
+        const menuData = await fetchCoffeeMenu();
 
         const orderLines: CoffeeOrderLine[] = menuData.map((item: Coffee) => ({
           id: item.id,
@@ -57,16 +85,9 @@ export function CoffeeOrder() {
           quantity: 0,
         }));
 
-        const availableSlots = slotsData.filter((slot) =>
-          isPickupSlotInFuture(slot),
-        );
-
         setItems(orderLines);
-        setSlots(availableSlots);
 
-        if (availableSlots.length > 0) {
-          setSelectedSlot(availableSlots[0]);
-        }
+        await refreshSlots();
       } catch (err) {
         console.error('Error initializing CoffeeOrder:', err);
         setError('Не вдалося завантажити дані. Будь ласка, оновіть сторінку.');
@@ -76,7 +97,17 @@ export function CoffeeOrder() {
     }
 
     loadInitialData();
-  }, [todayDate]);
+  }, [refreshSlots]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      refreshSlots();
+    }, 60_000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [refreshSlots]);
 
   const selectedItems = useMemo(
     () => items.filter((item) => item.quantity > 0),
@@ -140,6 +171,10 @@ export function CoffeeOrder() {
 
       if (err instanceof OrderError) {
         setError(getOrderErrorMessage(err.code));
+
+        if (err.code === 'SLOT_FULL' || err.code === 'SLOT_UNAVAILABLE') {
+          await refreshSlots();
+        }
       } else {
         setError('Не вдалося оформити замовлення. Спробуйте ще раз.');
       }
