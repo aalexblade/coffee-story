@@ -53,5 +53,9 @@ export function isPickupSlotInFuture(
     hourCycle: 'h23',
   }).format(now);
 
-  return slot.slot_time.slice(0, 5) > currentTime;
+  // Нормалізуємо час до формату HH:MM (на випадок якщо з БД приходить "9:00:00")
+  const [slotHours = '0', slotMinutes = '0'] = slot.slot_time.split(':');
+  const normalizedSlotTime = `${slotHours.padStart(2, '0')}:${slotMinutes.padStart(2, '0')}`;
+
+  return normalizedSlotTime > currentTime;
 }
