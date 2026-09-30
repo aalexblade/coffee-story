@@ -1,5 +1,6 @@
 import { supabase } from '@/shared/api/supabase';
 import type { Json } from '@/shared/api/supabase';
+import { createOrderError, OrderError } from '../lib/orderErrors';
 import type {
   CreateOrderPayload,
   CreateOrderResponse,
@@ -16,17 +17,17 @@ export async function createOrder(
   });
 
   if (error) {
-    // Форматуємо помилку від Supabase, щоб уникнути виводу порожнього {} об'єкта
-    const errorMessage =
-      error.message || error.details || 'Failed to create order';
-    console.error('Error in createOrder RPC:', errorMessage, error);
-    throw new Error(errorMessage);
+    console.error('Error in createOrder RPC:', error);
+    throw createOrderError(error);
   }
 
   const result = data?.[0];
 
   if (!result) {
-    throw new Error('No order confirmation returned');
+    throw new OrderError(
+      'CONFIRMATION_FAILED',
+      'No order confirmation returned',
+    );
   }
 
   return {
