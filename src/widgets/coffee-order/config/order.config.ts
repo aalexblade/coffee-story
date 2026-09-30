@@ -1,0 +1,1 @@
+export const ORDER_TIME_ZONE = 'Europe/Kyiv';
