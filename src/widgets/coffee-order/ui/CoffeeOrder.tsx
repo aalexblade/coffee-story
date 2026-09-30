@@ -12,6 +12,7 @@ import {
   subscribeToOrderStore,
 } from '../lib/orderStorage';
 import { getOrderErrorMessage, OrderError } from '../lib/orderErrors';
+import { getTodayDate, isPickupSlotInFuture } from '../lib/pickupSlots';
 import type {
   CoffeeOrder,
   CoffeeOrderLine,
@@ -35,14 +36,7 @@ export function CoffeeOrder() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const todayDate = useMemo(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }, []);
+  const todayDate = useMemo(() => getTodayDate(), []);
 
   useEffect(() => {
     async function loadInitialData() {
@@ -63,11 +57,15 @@ export function CoffeeOrder() {
           quantity: 0,
         }));
 
-        setItems(orderLines);
-        setSlots(slotsData);
+        const availableSlots = slotsData.filter((slot) =>
+          isPickupSlotInFuture(slot),
+        );
 
-        if (slotsData.length > 0) {
-          setSelectedSlot(slotsData[0]);
+        setItems(orderLines);
+        setSlots(availableSlots);
+
+        if (availableSlots.length > 0) {
+          setSelectedSlot(availableSlots[0]);
         }
       } catch (err) {
         console.error('Error initializing CoffeeOrder:', err);
