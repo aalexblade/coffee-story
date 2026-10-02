@@ -238,6 +238,14 @@ export type Database = {
         Returns: Database['public']['Tables']['pickup_slots']['Row'][];
       };
     };
+
+    get_available_pickup_slots: {
+      Args: {
+        p_slot_date: string;
+      };
+      Returns: Database['public']['Tables']['pickup_slots']['Row'][];
+    };
+
     Enums: {
       coffee_accent: 'espresso' | 'milk' | 'soft';
       order_status:
