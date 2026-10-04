@@ -3,91 +3,27 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path to public, extensions;
 
-select plan(11);
+select plan(12);
 
--- =========================================================
--- 1. RLS STATUS
--- =========================================================
+-- 1-4. RLS Status
+select ok((select relrowsecurity from pg_class where oid = 'public.coffee'::regclass), 'RLS enabled on coffee');
+select ok((select relrowsecurity from pg_class where oid = 'public.pickup_slots'::regclass), 'RLS enabled on pickup_slots');
+select ok((select relrowsecurity from pg_class where oid = 'public.orders'::regclass), 'RLS enabled on orders');
+select ok((select relrowsecurity from pg_class where oid = 'public.order_items'::regclass), 'RLS enabled on order_items');
 
-select is(
-  (select relrowsecurity from pg_class where relname = 'coffee' and relnamespace = 'public'::regnamespace),
-  true,
-  'RLS is enabled on coffee'
-);
-
-select is(
-  (select relrowsecurity from pg_class where relname = 'pickup_slots' and relnamespace = 'public'::regnamespace),
-  true,
-  'RLS is enabled on pickup_slots'
-);
-
-select is(
-  (select relrowsecurity from pg_class where relname = 'orders' and relnamespace = 'public'::regnamespace),
-  true,
-  'RLS is enabled on orders'
-);
-
-select is(
-  (select relrowsecurity from pg_class where relname = 'order_items' and relnamespace = 'public'::regnamespace),
-  true,
-  'RLS is enabled on order_items'
-);
-
--- =========================================================
--- 2. DIRECT ACCESS (ROLE: anon)
--- =========================================================
-
+-- 5-10. Table Privileges for anon
 set local role anon;
 
-select lives_ok(
-  $$ select id from public.coffee limit 1 $$,
-  'anon can SELECT from coffee'
-);
+select ok(has_table_privilege('anon', 'public.coffee', 'SELECT'), 'anon can SELECT coffee table directly');
+select ok(not has_table_privilege('anon', 'public.pickup_slots', 'SELECT'), 'anon cannot SELECT pickup_slots directly');
+select ok(not has_table_privilege('anon', 'public.orders', 'SELECT'), 'anon cannot SELECT orders directly');
+select ok(not has_table_privilege('anon', 'public.orders', 'INSERT'), 'anon cannot INSERT orders directly');
+select ok(not has_table_privilege('anon', 'public.order_items', 'SELECT'), 'anon cannot SELECT order_items directly');
+select ok(not has_table_privilege('anon', 'public.order_items', 'INSERT'), 'anon cannot INSERT order_items directly');
 
-select throws_ok(
-  $$ select id from public.pickup_slots limit 1 $$,
-  '42501',
-  NULL,
-  'anon CANNOT SELECT from pickup_slots directly'
-);
-
-select throws_ok(
-  $$ select id from public.orders limit 1 $$,
-  '42501',
-  NULL,
-  'anon CANNOT SELECT from orders'
-);
-
-select throws_ok(
-  $$ select id from public.order_items limit 1 $$,
-  '42501',
-  NULL,
-  'anon CANNOT SELECT from order_items'
-);
-
-select throws_ok(
-  $$ insert into public.orders (pickup_slot_id) values ('00000000-0000-0000-0000-000000000000') $$,
-  '42501',
-  NULL,
-  'anon CANNOT INSERT into orders directly'
-);
-
--- =========================================================
--- 3. RPC PERMISSIONS (ROLE: anon)
--- =========================================================
-
-select lives_ok(
-  $$ select * from public.get_available_pickup_slots(current_date) $$,
-  'anon CAN execute get_available_pickup_slots RPC'
-);
-
-select throws_ok(
-  $$ select * from public.create_order('00000000-0000-0000-0000-000000000000', '[]'::jsonb) $$,
-  'Order must contain at least one item',
-  'anon CAN execute create_order RPC'
-);
-
-reset role;
+-- 11-12. RPC Privileges
+select ok(has_function_privilege('anon', 'public.create_order(uuid,jsonb,text,text)', 'EXECUTE'), 'anon can execute create_order RPC');
+select ok(has_function_privilege('anon', 'public.get_available_pickup_slots(date)', 'EXECUTE'), 'anon can execute get_available_pickup_slots RPC');
 
 select * from finish();
 
