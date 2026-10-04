@@ -42,33 +42,30 @@ export function CoffeeOrder() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const todayDate = useMemo(() => getTodayDate(), []);
-
+  // 1. refreshSlots прокидає помилки нагору та динамічно обчислює по поточній даті
   const refreshSlots = useCallback(async () => {
-    try {
-      const slotsData = await fetchPickupSlots(todayDate);
+    const currentDate = getTodayDate();
+    const slotsData = await fetchPickupSlots(currentDate);
 
-      const availableSlots = slotsData.filter((slot) =>
-        isPickupSlotInFuture(slot),
-      );
+    const availableSlots = slotsData.filter((slot) =>
+      isPickupSlotInFuture(slot),
+    );
 
-      setSlots(availableSlots);
+    setSlots(availableSlots);
 
-      setSelectedSlot((currentSlot) => {
-        if (
-          currentSlot &&
-          availableSlots.some((slot) => slot.id === currentSlot.id)
-        ) {
-          return currentSlot;
-        }
+    setSelectedSlot((currentSlot) => {
+      if (
+        currentSlot &&
+        availableSlots.some((slot) => slot.id === currentSlot.id)
+      ) {
+        return currentSlot;
+      }
 
-        return availableSlots[0] ?? null;
-      });
-    } catch (err) {
-      console.error('Error refreshing pickup slots:', err);
-    }
-  }, [todayDate]);
+      return availableSlots[0] ?? null;
+    });
+  }, []);
 
+  // 2. Первинне завантаження меню та слотів з обробкою помилки
   useEffect(() => {
     async function loadInitialData() {
       try {
@@ -87,6 +84,7 @@ export function CoffeeOrder() {
 
         setItems(orderLines);
 
+        // Якщо RPC-запит слотів впаде, помилка перехоплюється у блоці catch нижче
         await refreshSlots();
       } catch (err) {
         console.error('Error initializing CoffeeOrder:', err);
@@ -99,9 +97,12 @@ export function CoffeeOrder() {
     loadInitialData();
   }, [refreshSlots]);
 
+  // 3. Фонове оновлення слотів кожні 60 секунд
   useEffect(() => {
     const intervalId = window.setInterval(() => {
-      refreshSlots();
+      refreshSlots().catch((err) => {
+        console.error('Error refreshing pickup slots in background:', err);
+      });
     }, 60_000);
 
     return () => {
@@ -155,6 +156,7 @@ export function CoffeeOrder() {
         })),
       });
 
+      // Фіксуємо авторитарну підсумкову ціну з сервера
       const newOrder: CoffeeOrder = {
         id: createdOrderData.orderId,
         orderNumber: createdOrderData.orderNumber,
@@ -173,7 +175,12 @@ export function CoffeeOrder() {
         setError(getOrderErrorMessage(err.code));
 
         if (err.code === 'SLOT_FULL' || err.code === 'SLOT_UNAVAILABLE') {
-          await refreshSlots();
+          refreshSlots().catch((refreshErr) => {
+            console.error(
+              'Error refreshing slots after order error:',
+              refreshErr,
+            );
+          });
         }
       } else {
         setError('Не вдалося оформити замовлення. Спробуйте ще раз.');
