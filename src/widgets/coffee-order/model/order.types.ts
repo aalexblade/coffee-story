@@ -38,5 +38,4 @@ export interface CreateOrderResponse {
   formattedOrderNumber: string;
   totalQuantity: number;
   totalPrice: number;
-  items?: CoffeeOrderLine[];
 }

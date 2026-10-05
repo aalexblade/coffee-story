@@ -36,6 +36,5 @@ export async function createOrder(
     formattedOrderNumber: `CO-${String(result.order_number).padStart(6, '0')}`,
     totalQuantity: result.total_quantity,
     totalPrice: result.total_price,
-    items: [],
   };
 }
