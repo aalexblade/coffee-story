@@ -84,7 +84,6 @@ export function CoffeeOrder() {
 
         setItems(orderLines);
 
-        // Якщо RPC-запит слотів впаде, помилка перехоплюється у блоці catch нижче
         await refreshSlots();
       } catch (err) {
         console.error('Error initializing CoffeeOrder:', err);
@@ -156,13 +155,12 @@ export function CoffeeOrder() {
         })),
       });
 
-      // Фіксуємо авторитарну підсумкову ціну з сервера
       const newOrder: CoffeeOrder = {
         id: createdOrderData.orderId,
         orderNumber: createdOrderData.orderNumber,
         formattedOrderNumber: createdOrderData.formattedOrderNumber,
         pickupTime: selectedSlot.slot_time.slice(0, 5),
-        items: selectedItems,
+        items: selectedItems, 
         totalQuantity: createdOrderData.totalQuantity,
         totalPrice: createdOrderData.totalPrice,
       };
