@@ -160,7 +160,7 @@ export function CoffeeOrder() {
         orderNumber: createdOrderData.orderNumber,
         formattedOrderNumber: createdOrderData.formattedOrderNumber,
         pickupTime: selectedSlot.slot_time.slice(0, 5),
-        items: selectedItems, 
+        items: selectedItems,
         totalQuantity: createdOrderData.totalQuantity,
         totalPrice: createdOrderData.totalPrice,
       };
