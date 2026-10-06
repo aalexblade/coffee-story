@@ -21,20 +21,22 @@ export async function createOrder(
     throw createOrderError(error);
   }
 
-  const result = data?.[0];
+  // Оскільки RPC повертає jsonb-об'єкт напряму
+  const result = typeof data === 'string' ? JSON.parse(data) : data;
 
-  if (!result) {
+  if (!result || !result.order_id) {
     throw new OrderError(
       'CONFIRMATION_FAILED',
-      'No order confirmation returned',
+      'No valid order confirmation returned',
     );
   }
 
   return {
     orderId: result.order_id,
     orderNumber: result.order_number,
-    formattedOrderNumber: `CO-${String(result.order_number).padStart(6, '0')}`,
+    formattedOrderNumber: result.formatted_order_number,
     totalQuantity: result.total_quantity,
     totalPrice: result.total_price,
+    items: result.items || [],
   };
 }
