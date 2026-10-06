@@ -104,6 +104,9 @@ export function getOrderErrorMessage(code: OrderErrorCode): string {
     case 'INVALID_QUANTITY':
       return 'Не вдалося перевірити склад замовлення. Оновіть сторінку та спробуйте ще раз.';
 
+    case 'CONFIRMATION_FAILED':
+      return 'Замовлення створено, але не вдалося отримати підтвердження. Перевірте статус замовлення або зверніться до бариста.';
+
     case 'UNKNOWN':
     default:
       return 'Не вдалося оформити замовлення. Спробуйте ще раз.';
