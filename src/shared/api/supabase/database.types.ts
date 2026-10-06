@@ -224,12 +224,7 @@ export type Database = {
           p_items: Json
           p_pickup_slot_id: string
         }
-        Returns: {
-          order_id: string
-          order_number: number
-          total_price: number
-          total_quantity: number
-        }[]
+        Returns: Json
       }
       get_available_pickup_slots: {
         Args: { p_slot_date: string }
