@@ -30,10 +30,19 @@ export interface CreateOrderPayload {
   items: CreateOrderItemPayload[];
 }
 
+export interface OrderItemSnapshot {
+  coffee_id: string;
+  title: string;
+  price: number;
+  quantity: number;
+  subtotal: number;
+}
+
 export interface CreateOrderResponse {
   orderId: string;
   orderNumber: number;
   formattedOrderNumber: string;
   totalQuantity: number;
   totalPrice: number;
+  items: OrderItemSnapshot[];
 }
