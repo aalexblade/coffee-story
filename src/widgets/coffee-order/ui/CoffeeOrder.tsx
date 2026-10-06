@@ -160,7 +160,13 @@ export function CoffeeOrder() {
         orderNumber: createdOrderData.orderNumber,
         formattedOrderNumber: createdOrderData.formattedOrderNumber,
         pickupTime: selectedSlot.slot_time.slice(0, 5),
-        items: selectedItems,
+        items: createdOrderData.items.map((item) => ({
+          id: item.coffee_id,
+          title: item.title,
+          details: '',
+          price: item.price,
+          quantity: item.quantity,
+        })),
         totalQuantity: createdOrderData.totalQuantity,
         totalPrice: createdOrderData.totalPrice,
       };
