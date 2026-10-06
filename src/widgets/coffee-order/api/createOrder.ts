@@ -12,8 +12,8 @@ export async function createOrder(
   const { data, error } = await supabase.rpc('create_order', {
     p_pickup_slot_id: payload.pickupSlotId,
     p_items: payload.items as unknown as Json,
-    p_customer_name: payload.customerName,
-    p_customer_phone: payload.customerPhone,
+    p_customer_name: undefined,
+    p_customer_phone: undefined,
   });
 
   if (error) {
