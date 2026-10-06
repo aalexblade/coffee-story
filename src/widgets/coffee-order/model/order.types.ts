@@ -27,7 +27,10 @@ export interface CreateOrderItemPayload {
 
 export interface CreateOrderPayload {
   pickupSlotId: string;
-  items: CreateOrderItemPayload[];
+  items: Array<{
+    coffee_id: string;
+    quantity: number;
+  }>;
   customerName?: string;
   customerPhone?: string;
 }
