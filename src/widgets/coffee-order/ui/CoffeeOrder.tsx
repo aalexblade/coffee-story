@@ -346,7 +346,6 @@ export function CoffeeOrder() {
                 <span>Total</span>
                 <strong>{totalPrice} ₴</strong>
               </div>
-
               <button
                 type="button"
                 className={styles.submit}
