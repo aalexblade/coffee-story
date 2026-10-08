@@ -36,92 +36,92 @@ values (
 set local role anon;
 
 select lives_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 2}]'::jsonb, 'Олександр', '+380991234567') $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 2}]'::jsonb, 'Олександр', '+380991234567') $$,
   'Valid order creation succeeds'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[]'::jsonb) $$,
   'Empty items payload rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "non-existent", "quantity": 1}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "non-existent", "quantity": 1}]'::jsonb) $$,
   'Non-existent coffee rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-decaf", "quantity": 1}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-decaf", "quantity": 1}]'::jsonb) $$,
   'Unavailable coffee rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 1}, {"coffee_id": "test-espresso", "quantity": 2}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 1}, {"coffee_id": "test-espresso", "quantity": 2}]'::jsonb) $$,
   'Duplicate coffee in payload rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 0}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 0}]'::jsonb) $$,
   'Quantity 0 rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 21}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 21}]'::jsonb) $$,
   'Quantity 21 rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 1.5}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": 1.5}]'::jsonb) $$,
   'Decimal quantity rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": "abc"}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": "abc"}]'::jsonb) $$,
   'String quantity rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": null}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": null}]'::jsonb) $$,
   'Null quantity rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": true}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": true}]'::jsonb) $$,
   'Boolean quantity rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": {}}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "test-espresso", "quantity": {}}]'::jsonb) $$,
   'Object quantity rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[null]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[null]'::jsonb) $$,
   'Null item element rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"quantity": 1}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"quantity": 1}]'::jsonb) $$,
   'Missing coffee_id rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "", "quantity": 1}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": "", "quantity": 1}]'::jsonb) $$,
   'Empty string coffee_id rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": 123, "quantity": 1}]'::jsonb) $$,
+  $$ select public.create_order('11111111-1111-1111-1111-111111111111', '[{"coffee_id": 123, "quantity": 1}]'::jsonb) $$,
   'Numeric coffee_id rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('00000000-0000-0000-0000-000000000000', '[{"coffee_id": "test-espresso", "quantity": 1}]'::jsonb) $$,
+  $$ select public.create_order('00000000-0000-0000-0000-000000000000', '[{"coffee_id": "test-espresso", "quantity": 1}]'::jsonb) $$,
   'Non-existent slot rejected'
 );
 
 select throws_ok(
-  $$ select * from public.create_order('22222222-2222-2222-2222-222222222222', '[{"coffee_id": "test-espresso", "quantity": 1}]'::jsonb) $$,
+  $$ select public.create_order('22222222-2222-2222-2222-222222222222', '[{"coffee_id": "test-espresso", "quantity": 1}]'::jsonb) $$,
   'Full slot rejected'
 );
 
@@ -137,14 +137,26 @@ select results_eq(
 select results_eq(
   $$ select coffee_title, unit_price, quantity from public.order_items where order_id = (select id from public.orders where customer_name = 'Олександр' order by created_at desc limit 1) $$,
   $$ values ('Test Espresso'::text, 50.00::numeric, 2) $$,
-  'Order items snapshot recorded correctly'
+  'Order items snapshot recorded correctly in database'
 );
 
 select ok(
-  (select order_number is not null from public.orders where customer_name = 'Олександр' order by created_at desc limit 1),
-  'Order number automatically generated'
+  (
+    select (res->>'total_price')::numeric = 100.00 
+       and (res->>'total_quantity')::integer = 2
+       and res->'items'->0->>'title' = 'Test Espresso'
+    from (
+      select public.create_order(
+        '11111111-1111-1111-1111-111111111111', 
+        '[{"coffee_id": "test-espresso", "quantity": 2}]'::jsonb, 
+        'Олександр 2', 
+        '+380991234567'
+      ) as res
+    ) t
+  ),
+  'RPC create_order returns valid JSONB structure with items snapshot'
 );
 
-select * from finish();
+select finish();
 
 rollback;
