@@ -33,7 +33,7 @@ BEGIN
   END IF;
 
   ------------------------------------------------------------------------------
-  -- 2. ВАЛІДАЦІЯ ТА БЛОКУВАННЯ СЛОТА (FOR UPDATE + Capacity + Future time check)
+  -- 2. ВАЛІДАЦІЯ ТА БЛОКУВАННЯ СЛОТА (FOR UPDATE + Active Capacity + Future time check)
   ------------------------------------------------------------------------------
   SELECT * INTO v_slot
   FROM public.pickup_slots
@@ -50,7 +50,8 @@ BEGIN
 
   SELECT count(*) INTO v_current_orders
   FROM public.orders
-  WHERE pickup_slot_id = p_pickup_slot_id;
+  WHERE pickup_slot_id = p_pickup_slot_id
+    AND status IN ('pending', 'confirmed', 'preparing', 'ready');
 
   IF v_current_orders >= v_slot.max_orders THEN
     RAISE EXCEPTION 'Pickup slot is fully booked';
@@ -85,28 +86,32 @@ BEGIN
     END IF;
     v_seen_coffee_ids := array_append(v_seen_coffee_ids, v_coffee_id);
 
-    -- Перевірка кількості
-    BEGIN
-      v_quantity := (v_item->>'quantity')::integer;
-    EXCEPTION WHEN OTHERS THEN
-      RAISE EXCEPTION 'Invalid quantity';
-    END BEGIN;
-
-    IF v_quantity IS NULL OR v_quantity < 1 OR v_quantity > 20 THEN
+    -- Строга валідація цілочисельної кількості
+    IF NOT (v_item ? 'quantity')
+       OR jsonb_typeof(v_item -> 'quantity') <> 'number'
+       OR (v_item ->> 'quantity') !~ '^-?[0-9]+$'
+    THEN
       RAISE EXCEPTION 'Invalid quantity';
     END IF;
 
-    -- Пошук кави (v_coffee_id як TEXT/VARCHAR, захист від типу uuid)
+    v_quantity := (v_item->>'quantity')::integer;
+
+    IF v_quantity < 1 OR v_quantity > 20 THEN
+      RAISE EXCEPTION 'Invalid quantity';
+    END IF;
+
+    -- Пошук кави за текстовим ID
     SELECT price, title INTO v_unit_price, v_title
     FROM public.coffee
-    WHERE id::text = v_coffee_id AND is_available = true;
+    WHERE id = v_coffee_id AND is_available = true;
 
     IF NOT FOUND THEN
       RAISE EXCEPTION 'Coffee "%" is unavailable', v_coffee_id;
     END IF;
 
+    -- Вставка v_coffee_id без касту до ::uuid
     INSERT INTO public.order_items (order_id, coffee_id, quantity, unit_price)
-    VALUES (v_order_id, v_coffee_id::uuid, v_quantity, v_unit_price);
+    VALUES (v_order_id, v_coffee_id, v_quantity, v_unit_price);
 
     v_total_quantity := v_total_quantity + v_quantity;
     v_total_price := v_total_price + (v_unit_price * v_quantity);
