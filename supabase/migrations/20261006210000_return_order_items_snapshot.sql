@@ -100,7 +100,7 @@ BEGIN
       RAISE EXCEPTION 'Invalid quantity';
     END IF;
 
-    -- Пошук кави за текстовим ID
+    -- Пошук кави
     SELECT price, title INTO v_unit_price, v_title
     FROM public.coffee
     WHERE id = v_coffee_id AND is_available = true;
@@ -109,9 +109,21 @@ BEGIN
       RAISE EXCEPTION 'Coffee "%" is unavailable', v_coffee_id;
     END IF;
 
-    -- Вставка v_coffee_id без касту до ::uuid
-    INSERT INTO public.order_items (order_id, coffee_id, quantity, unit_price)
-    VALUES (v_order_id, v_coffee_id, v_quantity, v_unit_price);
+    -- Вставка позиції із обов'язковим coffee_title
+    INSERT INTO public.order_items (
+      order_id,
+      coffee_id,
+      coffee_title,
+      quantity,
+      unit_price
+    )
+    VALUES (
+      v_order_id,
+      v_coffee_id,
+      v_title,
+      v_quantity,
+      v_unit_price
+    );
 
     v_total_quantity := v_total_quantity + v_quantity;
     v_total_price := v_total_price + (v_unit_price * v_quantity);
