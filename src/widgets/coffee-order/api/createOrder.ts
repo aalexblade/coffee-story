@@ -4,7 +4,69 @@ import { createOrderError, OrderError } from '../lib/orderErrors';
 import type {
   CreateOrderPayload,
   CreateOrderResponse,
+  OrderItemSnapshot,
 } from '../model/order.types';
+
+function validateRpcResponse(data: unknown): CreateOrderResponse {
+  const result = typeof data === 'string' ? JSON.parse(data) : data;
+
+  if (
+    !result ||
+    typeof result !== 'object' ||
+    typeof (result as Record<string, unknown>).order_id !== 'string' ||
+    typeof (result as Record<string, unknown>).order_number !== 'number' ||
+    typeof (result as Record<string, unknown>).formatted_order_number !==
+      'string' ||
+    typeof (result as Record<string, unknown>).total_quantity !== 'number' ||
+    typeof (result as Record<string, unknown>).total_price !== 'number' ||
+    !Array.isArray((result as Record<string, unknown>).items)
+  ) {
+    throw new OrderError(
+      'CONFIRMATION_FAILED',
+      'Invalid RPC response payload structure',
+    );
+  }
+
+  const rawItems = (result as Record<string, unknown>).items as unknown[];
+
+  const items: OrderItemSnapshot[] = rawItems.map((item) => {
+    if (
+      !item ||
+      typeof item !== 'object' ||
+      typeof (item as Record<string, unknown>).coffee_id !== 'string' ||
+      typeof (item as Record<string, unknown>).title !== 'string' ||
+      typeof (item as Record<string, unknown>).price !== 'number' ||
+      typeof (item as Record<string, unknown>).quantity !== 'number' ||
+      typeof (item as Record<string, unknown>).subtotal !== 'number'
+    ) {
+      throw new OrderError(
+        'CONFIRMATION_FAILED',
+        'Invalid item snapshot in RPC response',
+      );
+    }
+
+    const typedItem = item as Record<string, unknown>;
+
+    return {
+      coffee_id: typedItem.coffee_id as string,
+      title: typedItem.title as string,
+      price: typedItem.price as number,
+      quantity: typedItem.quantity as number,
+      subtotal: typedItem.subtotal as number,
+    };
+  });
+
+  const typedResult = result as Record<string, unknown>;
+
+  return {
+    orderId: typedResult.order_id as string,
+    orderNumber: typedResult.order_number as number,
+    formattedOrderNumber: typedResult.formatted_order_number as string,
+    totalQuantity: typedResult.total_quantity as number,
+    totalPrice: typedResult.total_price as number,
+    items,
+  };
+}
 
 export async function createOrder(
   payload: CreateOrderPayload,
@@ -21,22 +83,5 @@ export async function createOrder(
     throw createOrderError(error);
   }
 
-  // Оскільки RPC повертає jsonb-об'єкт напряму
-  const result = typeof data === 'string' ? JSON.parse(data) : data;
-
-  if (!result || !result.order_id) {
-    throw new OrderError(
-      'CONFIRMATION_FAILED',
-      'No valid order confirmation returned',
-    );
-  }
-
-  return {
-    orderId: result.order_id,
-    orderNumber: result.order_number,
-    formattedOrderNumber: result.formatted_order_number,
-    totalQuantity: result.total_quantity,
-    totalPrice: result.total_price,
-    items: result.items || [],
-  };
+  return validateRpcResponse(data);
 }
