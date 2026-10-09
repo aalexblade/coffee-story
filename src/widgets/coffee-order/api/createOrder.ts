@@ -8,7 +8,16 @@ import type {
 } from '../model/order.types';
 
 function validateRpcResponse(data: unknown): CreateOrderResponse {
-  const result = typeof data === 'string' ? JSON.parse(data) : data;
+  let result: unknown;
+
+  try {
+    result = typeof data === 'string' ? JSON.parse(data) : data;
+  } catch {
+    throw new OrderError(
+      'CONFIRMATION_FAILED',
+      'Failed to parse RPC response JSON payload',
+    );
+  }
 
   if (
     !result ||
