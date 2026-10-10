@@ -8,6 +8,7 @@ export type CoffeeOrderLine = Pick<
   'id' | 'title' | 'details' | 'price'
 > & {
   quantity: number;
+  subtotal?: number; // Серверний проміжний підсумок для позиції
 };
 
 export interface CoffeeOrder {
