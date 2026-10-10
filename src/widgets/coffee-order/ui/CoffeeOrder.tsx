@@ -166,6 +166,7 @@ export function CoffeeOrder() {
           details: '',
           price: item.price,
           quantity: item.quantity,
+          subtotal: item.subtotal,
         })),
         totalQuantity: createdOrderData.totalQuantity,
         totalPrice: createdOrderData.totalPrice,
