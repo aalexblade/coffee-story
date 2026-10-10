@@ -46,7 +46,8 @@ export function OrderConfirmation({
                 <span>
                   {item.title} × {item.quantity}
                 </span>
-                <span>{item.price * item.quantity} ₴</span>
+                {/* Використовуємо серверний subtotal або фоллбек на клієнтський розрахунок */}
+                <span>{item.subtotal ?? item.price * item.quantity} ₴</span>
               </li>
             ))}
           </ul>
