@@ -1,6 +1,4 @@
-import { supabase } from '@/shared/api/supabase';
-import type { Json } from '@/shared/api/supabase';
-import { createOrderError, OrderError } from '../lib/orderErrors';
+import { OrderError } from '../lib/orderErrors';
 import type {
   CreateOrderPayload,
   CreateOrderResponse,
@@ -80,17 +78,29 @@ function validateRpcResponse(data: unknown): CreateOrderResponse {
 export async function createOrder(
   payload: CreateOrderPayload,
 ): Promise<CreateOrderResponse> {
-  const { data, error } = await supabase.rpc('create_order', {
-    p_pickup_slot_id: payload.pickupSlotId,
-    p_items: payload.items as unknown as Json,
-    p_customer_name: undefined,
-    p_customer_phone: undefined,
+  const payloadData = payload as unknown as Record<string, unknown>;
+
+  const response = await fetch('/api/orders', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      slot_id: payload.pickupSlotId,
+      customer_name: payloadData.customerName || 'Гість',
+      customer_phone: payloadData.customerPhone || '',
+      items: payload.items,
+    }),
   });
 
-  if (error) {
-    console.error('Error in createOrder RPC:', error);
-    throw createOrderError(error);
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new OrderError(
+      'CONFIRMATION_FAILED',
+      result.error || 'Помилка при створенні замовлення на сервері',
+    );
   }
 
-  return validateRpcResponse(data);
+  return validateRpcResponse(result.order);
 }
