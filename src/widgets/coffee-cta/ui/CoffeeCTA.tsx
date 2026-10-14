@@ -36,7 +36,7 @@ export function CoffeeCTA() {
           </div>
 
           <div className={styles.bottom}>
-            <span>MON — FRI · 08:00 — 19:00</span>
+            <span>MON — FRI · 08:00 — 20:00</span>
             <span>KYIV · COFFEE WINDOW</span>
           </div>
         </div>
