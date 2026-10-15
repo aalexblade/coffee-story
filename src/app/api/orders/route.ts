@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseServer } from '@/shared/api/supabase/server';
 
-// Простий пам'ятне обмеження частоти запитів (Rate Limiting)
 const rateLimitMap = new Map<string, number>();
 
 export async function POST(request: Request) {
