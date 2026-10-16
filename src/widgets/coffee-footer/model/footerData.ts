@@ -6,5 +6,5 @@ export const FOOTER_NAVIGATION = [
 
 export const FOOTER_INFO = {
   location: 'KYIV · COFFEE WINDOW',
-  hours: 'MON — FRI · 08:00 — 19:00',
+  hours: 'MON — FRI · 08:00 — 22:00',
 } as const;
