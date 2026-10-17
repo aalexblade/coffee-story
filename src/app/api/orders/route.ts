@@ -5,12 +5,10 @@ const rateLimitMap = new Map<string, number>();
 
 export async function POST(request: Request) {
   try {
-    // 1. Обмеження частоти запитів за IP
     const ip = request.headers.get('x-forwarded-for') || '127.0.0.1';
     const now = Date.now();
     const lastRequestTime = rateLimitMap.get(ip) || 0;
 
-    // Захист: не частіше ніж 1 запит на 3 секунди від одного IP
     if (now - lastRequestTime < 3000) {
       return NextResponse.json(
         {
@@ -21,39 +19,33 @@ export async function POST(request: Request) {
     }
     rateLimitMap.set(ip, now);
 
-    // 2. Отримання та валідація даних
     const body = await request.json();
-    const { slot_id, customer_name, customer_phone, items } = body;
+    const slot_id = body.slot_id || body.slotId;
+    const items = body.items;
 
-    const trimmedPhone = customer_phone?.trim();
-
-    if (
-      !slot_id ||
-      !customer_name ||
-      !trimmedPhone ||
-      trimmedPhone.length < 10 ||
-      !items ||
-      !Array.isArray(items) ||
-      items.length === 0
-    ) {
+    if (!slot_id || !items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json(
         { error: 'Неповні або некоректні дані замовлення.' },
         { status: 400 },
       );
     }
 
-    // 3. Захищений виклик RPC у Supabase через Service Role з правильним ім'ям параметра
+    // Передаємо дефолтні значення для RPC, якщо клієнт їх не надіслав
+    const customerName = body.customer_name || body.customerName || 'Гість';
+    const customerPhone =
+      body.customer_phone || body.customerPhone || '+380000000000';
+
     const { data, error } = await supabaseServer.rpc('create_order', {
       p_pickup_slot_id: slot_id,
-      p_customer_name: customer_name,
-      p_customer_phone: trimmedPhone,
+      p_customer_name: customerName,
+      p_customer_phone: customerPhone,
       p_items: items,
     });
 
     if (error) {
-      console.error('[API /api/orders] Database RPC error:', error.message);
+      console.error('[API /api/orders] Database RPC error detail:', error);
       return NextResponse.json(
-        { error: 'Помилка при створенні замовлення в базі даних.' },
+        { error: `Помилка бази даних: ${error.message}` },
         { status: 400 },
       );
     }
