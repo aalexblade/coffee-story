@@ -6,6 +6,7 @@ import {
   useMemo,
   useState,
   useSyncExternalStore,
+  type ChangeEvent,
 } from 'react';
 import { fetchCoffeeMenu, type Coffee } from '@/entities/coffee';
 import { fetchPickupSlots } from '../api/fetchPickupSlots';
@@ -27,10 +28,49 @@ import type {
 import styles from './CoffeeOrder.module.css';
 import { OrderConfirmation } from './OrderConfirmation';
 
+// Допоміжна функція маскування телефону (+380 XX XXX XX XX)
+function formatUkrainianPhone(value: string): string {
+  // Залишаємо тільки цифри
+  const digits = value.replace(/\D/g, '');
+
+  // Якщо починається з 380, прибираємо код країни для зручності форматування
+  let raw = digits;
+  if (raw.startsWith('380')) {
+    raw = raw.slice(3);
+  } else if (raw.startsWith('80')) {
+    raw = raw.slice(2);
+  } else if (raw.startsWith('0')) {
+    raw = raw.slice(1);
+  }
+
+  // Обмежуємо довжину 9 цифрами після +380
+  raw = raw.slice(0, 9);
+
+  if (raw.length === 0) return '+380 ';
+  if (raw.length <= 2) return `+380 (${raw}`;
+  if (raw.length <= 5) return `+380 (${raw.slice(0, 2)}) ${raw.slice(2)}`;
+  if (raw.length <= 7)
+    return `+380 (${raw.slice(0, 2)}) ${raw.slice(2, 5)}-${raw.slice(5)}`;
+
+  return `+380 (${raw.slice(0, 2)}) ${raw.slice(2, 5)}-${raw.slice(5, 7)}-${raw.slice(7, 9)}`;
+}
+
+// Валідація імені (Українська та латинські літери, пробіли, дефіси, апостроф)
+const NAME_REGEX = /^[a-zA-Zа-яА-ЯіІїЇєЄґҐ'’\s-]{2,40}$/;
+
 export function CoffeeOrder() {
   const [items, setItems] = useState<CoffeeOrderLine[]>([]);
   const [slots, setSlots] = useState<PickupSlot[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<PickupSlot | null>(null);
+
+  // Стейти даних клієнта
+  const [customerName, setCustomerName] = useState<string>('');
+  const [customerPhone, setCustomerPhone] = useState<string>('+380 ');
+
+  // Окремі помилки валідації полів
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [slotError, setSlotError] = useState<string | null>(null);
 
   const order = useSyncExternalStore(
     subscribeToOrderStore,
@@ -40,9 +80,8 @@ export function CoffeeOrder() {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [generalError, setGeneralError] = useState<string | null>(null);
 
-  // 1. refreshSlots прокидає помилки нагору та динамічно обчислює по поточній даті
   const refreshSlots = useCallback(async () => {
     const currentDate = getTodayDate();
     const slotsData = await fetchPickupSlots(currentDate);
@@ -65,12 +104,11 @@ export function CoffeeOrder() {
     });
   }, []);
 
-  // 2. Первинне завантаження меню та слотів з обробкою помилки
   useEffect(() => {
     async function loadInitialData() {
       try {
         setIsLoading(true);
-        setError(null);
+        setGeneralError(null);
 
         const menuData = await fetchCoffeeMenu();
 
@@ -83,11 +121,12 @@ export function CoffeeOrder() {
         }));
 
         setItems(orderLines);
-
         await refreshSlots();
       } catch (err) {
         console.error('Error initializing CoffeeOrder:', err);
-        setError('Не вдалося завантажити дані. Будь ласка, оновіть сторінку.');
+        setGeneralError(
+          'Не вдалося завантажити дані. Будь ласка, оновіть сторінку.',
+        );
       } finally {
         setIsLoading(false);
       }
@@ -96,7 +135,6 @@ export function CoffeeOrder() {
     loadInitialData();
   }, [refreshSlots]);
 
-  // 3. Фонове оновлення слотів кожні 60 секунд
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       refreshSlots().catch((err) => {
@@ -138,17 +176,95 @@ export function CoffeeOrder() {
     );
   };
 
+  // Обробники зміни значень полів з валідацією на льоту
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setCustomerName(val);
+
+    if (nameError) {
+      if (NAME_REGEX.test(val.trim())) {
+        setNameError(null);
+      }
+    }
+  };
+
+  const handlePhoneChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatUkrainianPhone(e.target.value);
+    setCustomerPhone(formatted);
+
+    if (phoneError) {
+      const digitsOnly = formatted.replace(/\D/g, '');
+      if (digitsOnly.length === 12) {
+        setPhoneError(null);
+      }
+    }
+  };
+
+  const handleSlotSelect = (slot: PickupSlot) => {
+    setSelectedSlot(slot);
+    if (slotError) {
+      setSlotError(null);
+    }
+  };
+
+  // Строга валідація всієї форми перед відправкою
+  const validateForm = (): boolean => {
+    let isValid = true;
+
+    // 1. Перевірка імені
+    const trimmedName = customerName.trim();
+    if (!trimmedName) {
+      setNameError('Будь ласка, вкажіть ваше ім’я');
+      isValid = false;
+    } else if (!NAME_REGEX.test(trimmedName)) {
+      setNameError('Ім’я має містити від 2 до 40 літер без спецсимволів');
+      isValid = false;
+    } else {
+      setNameError(null);
+    }
+
+    // 2. Перевірка телефону (потрібно рівно 12 цифр: 380 + 9 цифр)
+    const digitsOnly = customerPhone.replace(/\D/g, '');
+    if (digitsOnly.length !== 12) {
+      setPhoneError('Введіть коректний номер телефону (+380 XX XXX XX XX)');
+      isValid = false;
+    } else {
+      setPhoneError(null);
+    }
+
+    // 3. Перевірка слоту
+    if (!selectedSlot) {
+      setSlotError('Будь ласка, оберіть час видачі');
+      isValid = false;
+    } else {
+      setSlotError(null);
+    }
+
+    return isValid;
+  };
+
   const handleSubmit = async () => {
-    if (selectedItems.length === 0 || !selectedSlot) {
+    setGeneralError(null);
+
+    if (selectedItems.length === 0) {
+      setGeneralError('Оберіть хоча б один напій у меню.');
       return;
     }
 
+    if (!validateForm() || !selectedSlot) {
+      return;
+    }
+
+    const cleanName = customerName.trim();
+    const cleanPhone = `+${customerPhone.replace(/\D/g, '')}`;
+
     try {
       setIsSubmitting(true);
-      setError(null);
 
       const createdOrderData = await createOrder({
         pickupSlotId: selectedSlot.id,
+        customerName: cleanName,
+        customerPhone: cleanPhone,
         items: selectedItems.map((item) => ({
           coffee_id: item.id,
           quantity: item.quantity,
@@ -177,7 +293,7 @@ export function CoffeeOrder() {
       console.error('Error submitting order:', err);
 
       if (err instanceof OrderError) {
-        setError(getOrderErrorMessage(err.code));
+        setGeneralError(getOrderErrorMessage(err.code));
 
         if (err.code === 'SLOT_FULL' || err.code === 'SLOT_UNAVAILABLE') {
           refreshSlots().catch((refreshErr) => {
@@ -188,7 +304,7 @@ export function CoffeeOrder() {
           });
         }
       } else {
-        setError('Не вдалося оформити замовлення. Спробуйте ще раз.');
+        setGeneralError('Не вдалося оформити замовлення. Спробуйте ще раз.');
       }
     } finally {
       setIsSubmitting(false);
@@ -197,6 +313,11 @@ export function CoffeeOrder() {
 
   const handleOrderAgain = () => {
     clearStoredOrder();
+    setCustomerName('');
+    setCustomerPhone('+380 ');
+    setNameError(null);
+    setPhoneError(null);
+    setSlotError(null);
 
     setItems((currentItems) =>
       currentItems.map((item) => ({ ...item, quantity: 0 })),
@@ -238,7 +359,7 @@ export function CoffeeOrder() {
           </div>
         </div>
 
-        {error && <div className={styles.error}>{error}</div>}
+        {generalError && <div className={styles.error}>{generalError}</div>}
 
         {isLoading ? (
           <div className={styles.loading}>Завантаження меню...</div>
@@ -332,7 +453,7 @@ export function CoffeeOrder() {
                         className={
                           selectedSlot?.id === slot.id ? styles.activeTime : ''
                         }
-                        onClick={() => setSelectedSlot(slot)}
+                        onClick={() => handleSlotSelect(slot)}
                         disabled={isSubmitting}
                         aria-pressed={selectedSlot?.id === slot.id}
                       >
@@ -341,18 +462,64 @@ export function CoffeeOrder() {
                     ))
                   )}
                 </div>
+                {slotError && (
+                  <span className={styles.inputError}>{slotError}</span>
+                )}
+              </div>
+
+              {/* Поля для імені та телефону клієнта */}
+              <div className={styles.customerFields}>
+                <div className={styles.field}>
+                  <label htmlFor="customer-name" className={styles.fieldLabel}>
+                    YOUR NAME
+                  </label>
+                  <input
+                    id="customer-name"
+                    type="text"
+                    className={`${styles.fieldInput} ${
+                      nameError ? styles.invalidInput : ''
+                    }`}
+                    placeholder="Олександр"
+                    value={customerName}
+                    onChange={handleNameChange}
+                    disabled={isSubmitting}
+                    maxLength={40}
+                  />
+                  {nameError && (
+                    <span className={styles.inputError}>{nameError}</span>
+                  )}
+                </div>
+
+                <div className={styles.field}>
+                  <label htmlFor="customer-phone" className={styles.fieldLabel}>
+                    PHONE NUMBER
+                  </label>
+                  <input
+                    id="customer-phone"
+                    type="tel"
+                    className={`${styles.fieldInput} ${
+                      phoneError ? styles.invalidInput : ''
+                    }`}
+                    placeholder="+380 (67) 123-45-67"
+                    value={customerPhone}
+                    onChange={handlePhoneChange}
+                    disabled={isSubmitting}
+                  />
+                  {phoneError && (
+                    <span className={styles.inputError}>{phoneError}</span>
+                  )}
+                </div>
               </div>
 
               <div className={styles.total}>
                 <span>Total</span>
                 <strong>{totalPrice} ₴</strong>
               </div>
+
               <button
                 type="button"
                 className={styles.submit}
-                disabled={
-                  selectedItems.length === 0 || !selectedSlot || isSubmitting
-                }
+                disabled={selectedItems.length === 0 || isSubmitting}
                 onClick={handleSubmit}
               >
                 <span>{isSubmitting ? 'Processing...' : 'Place order'}</span>
