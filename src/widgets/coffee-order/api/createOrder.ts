@@ -37,23 +37,7 @@ function validateRpcResponse(data: unknown): CreateOrderResponse {
   const rawItems = (result as Record<string, unknown>).items as unknown[];
 
   const items: OrderItemSnapshot[] = rawItems.map((item) => {
-    if (
-      !item ||
-      typeof item !== 'object' ||
-      typeof (item as Record<string, unknown>).coffee_id !== 'string' ||
-      typeof (item as Record<string, unknown>).title !== 'string' ||
-      typeof (item as Record<string, unknown>).price !== 'number' ||
-      typeof (item as Record<string, unknown>).quantity !== 'number' ||
-      typeof (item as Record<string, unknown>).subtotal !== 'number'
-    ) {
-      throw new OrderError(
-        'CONFIRMATION_FAILED',
-        'Invalid item snapshot in RPC response',
-      );
-    }
-
     const typedItem = item as Record<string, unknown>;
-
     return {
       coffee_id: typedItem.coffee_id as string,
       title: typedItem.title as string,
@@ -78,8 +62,6 @@ function validateRpcResponse(data: unknown): CreateOrderResponse {
 export async function createOrder(
   payload: CreateOrderPayload,
 ): Promise<CreateOrderResponse> {
-  const payloadData = payload as unknown as Record<string, unknown>;
-
   const response = await fetch('/api/orders', {
     method: 'POST',
     headers: {
@@ -87,8 +69,6 @@ export async function createOrder(
     },
     body: JSON.stringify({
       slot_id: payload.pickupSlotId,
-      customer_name: payloadData.customerName || 'Гість',
-      customer_phone: payloadData.customerPhone || '',
       items: payload.items,
     }),
   });
