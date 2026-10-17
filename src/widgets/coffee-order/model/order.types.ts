@@ -28,6 +28,8 @@ export interface CreateOrderItemPayload {
 
 export interface CreateOrderPayload {
   pickupSlotId: string;
+  customerName: string;
+  customerPhone: string;
   items: CreateOrderItemPayload[];
 }
 
